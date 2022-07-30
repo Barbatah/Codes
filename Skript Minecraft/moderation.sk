@@ -1,0 +1,2732 @@
+#===================================#
+
+      #---- Partie Options ----#
+
+#===================================#
+
+options:
+#PREFIX
+	prefix: &6[Modération]
+	prefixfreeze: &b&l[&bFreeze&b&l]
+	prefixavert: &a&l[&aAvertissement&a&l]
+	prefixmute: &f&l[&fMute&f&l]
+	prefixkick: &6&l[&6Kick&6&l]
+	prefixban: &c&l[&cBan&c&l]
+	prefixreport: &d&l[&dReport&d&l]&f
+	prefixlook: &a&l[&aLooKup&a&l]
+	prefixupdate: &a&l[&aMAJ&a&l]
+	prefixstaff: &c&l[&cStaff&c&l]
+	prefixtroll: &6&l[&6Troll&6&l]&f
+#TEMP DES BAN EN ANGLAIS
+	banspawnkill: 24d
+	bantypecancer: 24d
+	bantypegamin: 24d
+#TEMP DES MUTES EN ANGLAIS
+	muteinsulte: 5h
+	mutemenace: 5h
+	mutepub: 5h
+	mutespam: 5h
+#MESSAGE DE BAN TOUCHER QUE SI VOUS ÊTES SÛRE
+	bandefmsg1: &fVous avez été banni par &c%{ban.bannisseur.%arg 1%}%&f !%nl%&fRaison du Bannissement: &c%{ban.raison.%arg 1%}% !%nl%&fDate du Bannissement: &c%{ban.date.%arg 1%}%
+	msgtempban1: &fVous avez été banni par &c%{ban.bannisseur.%arg 1%}%&f !%nl%&fRaison du Bannissement: &c%{ban.raison.%arg 1%}% !%nl%&fDate du Bannissement: &c%{ban.date.%arg 1%}% !%nl%&fPendant: &c%{tempban.temp.%arg 1%}%
+	msgtempban2: &fVous avez été banni par &c%{tempban.bannisseur.%player%}%&f !%nl%&fRaison du Bannissement: &c%{tempban.raison.%player%}% !%nl%&fDate du Bannissement: &c%{tempban.date.%player%}% !%nl%&fPendant: &c%{tempban.temp.%player%}% !%nl%&fTentative: &cn°%{tempban.counter.%player%}%
+	msgbanip1: &fVous avez été banni-ip par le Staff &c%{banip.bannisseur.%arg 1%}%&f !%nl%&fRaison du Bannissement: &c%{banip.raison.%arg 1%}% !%nl%&fDate du Bannissement: &c%{banip.date.%arg 1%}%
+	bandefmsg2: &fVous avez été banni par &c%{ban.bannisseur.%player%}%&f !%nl%&fRaison du Bannissement: &c%{ban.raison.%player%}% !%nl%&fDate du Bannissement: &c%{ban.date.%player%}% %nl%&fTentative: &cn°%{ban.counter.%player%}%
+	msgbanip2: &fVous avez été banni-ip par le Staff &c%{banip.bannisseur.%player%}%&f !%nl%&fRaison du Bannissement: &c%{banip.raison.%player%}% &f!%nl%&fDate du Bannissement: &c%{banip.date.%player%}% &f!%nl%&fTentative &cn°%{banip.counter.%player%}%
+#MESSAGE DES KICK
+	msgkick: &7Vous avez été Kick du Serveur%nl%&6Raison  &a%arg 2%
+#MESSAGE ADMIN
+	msgadmkick: &6&l[&6Kick&6&l] &aLe joueur &f%arg 1% &aa été kick pour &f%arg 2%&a !
+	msgadmban: &c&l[&cBan&c&l] &aLe joueur &f%arg 1% &aa été banni définitivement pour &f%arg 2%&a !
+	msgadmunban: &c&l[&cBan&c&l] &aLe joueur &f%arg 1% &aa été débanni par &f%player%&a !
+	msgadmtempban: &c&l[&cBan&c&l] &aLe joueur &f%arg 1% &aa été banni pendant &f%{tempban.temps.fr.%arg 1%}% &apour &f%{tempban.raison.%arg 1%}% &apar &f%player% &a!
+	msgadmfreeze: &b&l[&bFreeze&b&l] &bLe joueur &b&l%arg 1% &ba été freeze pour &b&l%arg 2% &b!
+	msgadmunfreeze: &b&l[&bFreeze&b&l] &bLe joueur &b&l%arg 1% &ba été unfreeze par &b&l%player% &b!
+	msgadmmute: &f&l[&fMute&f&l] &fLe joueur &f&l%arg 1% &fa été mute pendant &f&l%{mute.temps.fr.%arg 1%}% &fpour &f&l%{mute.raison.%arg 1%}% &f!
+	msgadmunmute:&f&l[&fMute&f&l] &fLe joueur &f&l%arg 1% &fa été unmute par &f&l%player% &f!
+	msgadmavert: &a&l[&aAvertissement&a&l] &a&l%arg 1%&aa reçu un avertissement pour &a&l%arg 2%
+	msgadmreport: &d&l[&dReport&d&l]&f &f%player% &aa signalé &f%arg 1% &apour &f%arg 2%
+#PERMISSION
+	bypassperm: %{bypassperm}%
+	permalert: MODO
+	actuelversion: 9.0
+
+function CheckTime(time: text) :: boolean:
+    if length of {_time} is 2:
+        set {_check::*} to groups 0 of "%{_time}%" matched to "^[0-9](s|S|m|M|h|H|d|D)$"
+    else if length of {_time} is 3:
+        set {_check::*} to groups 0 of "%{_time}%" matched to "^[0-9]{2}(s|S|m|M|h|H|d|D)$"
+    if {_check::*} is set:
+        return true
+    else:
+        return false
+
+function TransformTime(time: text) :: timespan:
+    if length of {_time} is 2:
+        set {_time} to "0%{_time}%"
+    set {_characters::*} to {_time} split at ""
+    if {_characters::3} is "s":
+        set {_characters::3} to " seconds"
+    else if {_characters::3} is "m":
+        set {_characters::3} to " minutes"
+    else if {_characters::3} is "h":
+        set {_characters::3} to " hours"
+    else if {_characters::3} is "d":
+        set {_characters::3} to " days"
+    set {_result} to "%{_characters::1}%%{_characters::2}%%{_characters::3}%" parsed as timespan
+    return {_result}
+
+function SanctionTime(time: timespan) :: text:
+    set {_time} to "%{_time}%"
+    set {_words::*} to {_time} split at " "
+    if {_words::2} is "second" or "seconds":
+        set {_words::2} to "seconde(s)"
+    else if {_words::2} is "minute" or "minutes":
+        set {_words::2} to "minute(s)"
+    else if {_words::2} is "hour" or "hours":
+        set {_words::2} to "heure(s)"
+    else if {_words::2} is "day" or "days":
+        set {_words::2} to "jour(s)"
+    set {_result} to "%{_words::1}% %{_words::2}%"
+    return {_result}
+
+function TimeLeft(difference: timespan, cooldown: timespan) :: text:
+    subtract {_difference} from {_cooldown}
+    set {_cooldown} to "%{_cooldown}%"
+    replace "second " with "seconde(s) " in {_cooldown}
+    replace "seconds" with "seconde(s)" in {_cooldown}
+    replace "minute " with "minute(s) " in {_cooldown}
+    replace "minutes" with "minute(s)" in {_cooldown}
+    replace "hour " with "heure(s) " in {_cooldown}
+    replace "hours" with "heure(s)" in {_cooldown}
+    replace "day " with "jour(s) " in {_cooldown}
+    replace "days" with "jour(s)" in {_cooldown}
+    replace "and" with "et" in {_cooldown}
+    set {_words::*} to {_cooldown} split at " "
+    if {_words::5} is set:
+        set {_words::1} to rounded down ("%{_words::1}%" parsed as number)
+        set {_words::4} to rounded down ("%{_words::4}%" parsed as number)
+        set {_result} to "%{_words::1}% %{_words::2}% %{_words::3}% %{_words::4}% %{_words::5}%"
+    else:
+        set {_words::1} to rounded down ("%{_words::1}%" parsed as number)
+        set {_result} to "%{_words::1}% %{_words::2}%"
+    return {_result}
+
+#===================================#
+
+     #---- Partie Menu/Gui ----#
+
+#===================================#
+
+
+command /moderation [<offline player>] [<text>]:
+	permission: MODO
+	permission message: &cVous n'avez pas la permission ! &4[&cMODO&4]
+	trigger:
+		if arg 1 is not set:
+			send "{@prefix} &aChoisi un joueur" to player
+		else:
+			if arg 2 is not set:
+				open virtual chest inventory with size 6 with name "&6« Modération »" to player
+				format gui slot 4 of player with skull of "%arg 1%" parsed as offline player named "&a« &a%arg 1% »"
+				format gui slot 9 of player with red hardened clay named "&7« &4Temp-Ban &7» &7%arg 1%" to run player command "/moderation %arg 1% §tempban"
+				format gui slot 10 of player with red hardened clay named "&7« &4Ban-Ip &7» &7%arg 1%" to run player command "/moderation %arg 1% §banip"
+				format gui slot 11 of player with red hardened clay named "&7« &4Ban &7» &7%arg 1%" to run player command "/moderation %arg 1% §ban"
+				format gui slot 12 of player with orange hardened clay named "&7« &4Kick &7» &7%arg 1%" to run player command "/moderation %arg 1% §kick"
+				format gui slot 13 of player with orange hardened clay named "&7« &4Kick All &7» &7%arg 1%" to run player command "/moderation %arg 1% §kickall"
+				format gui slot 14 of player with light green clay named "&7« &4Avertissement &7» &7%arg 1%" to run player command "/moderation %arg 1% §avertissement"
+				format gui slot 15 of player with light blue hardened clay named "&7« &4Freeze &7» &7%arg 1%" to run player command "/moderation %arg 1% §freeze"
+				format gui slot 16 of player with white hardened clay named "&7« &4Mute &7» &7%arg 1%" to run player command "/moderation %arg 1% §mute"
+				make a gui slot 18, 19, 20, 21, 22, 23, 24, 25 and 26 of player with 1 stained glass pane named " "
+			if arg 2 is "§ban":
+				open virtual chest inventory with size 6 with name "&6« Modération »" to player
+				format gui slot 4 of player with skull of "%arg 1%" parsed as offline player named "&a« &a%arg 1% »"
+				format gui slot 9 of player with red hardened clay named "&7« &4Temp-Ban &7» &7%arg 1%" to run player command "/moderation %arg 1% §tempban"
+				format gui slot 10 of player with red hardened clay named "&7« &4Ban-Ip &7» &7%arg 1%" to run player command "/moderation %arg 1% §banip"
+				format gui slot 11 of player with red hardened clay named "&7« &4Ban &7» &7%arg 1%" to run player command "/moderation %arg 1% §ban"
+				format gui slot 12 of player with orange hardened clay named "&7« &4Kick &7» &7%arg 1%" to run player command "/moderation %arg 1% §kick"
+				format gui slot 13 of player with orange hardened clay named "&7« &4Kick All &7» &7%arg 1%" to run player command "/moderation %arg 1% §kickall"
+				format gui slot 14 of player with light green clay named "&7« &4Avertissement &7» &7%arg 1%" to run player command "/moderation %arg 1% §avertissement"
+				format gui slot 15 of player with light blue hardened clay named "&7« &4Freeze &7» &7%arg 1%" to run player command "/moderation %arg 1% §freeze"
+				format gui slot 16 of player with white hardened clay named "&7« &4Mute &7» &7%arg 1%" to run player command "/moderation %arg 1% §mute"
+				make a gui slot 18, 19, 20, 21, 22, 23, 24, 25 and 26 of player with 1 stained glass pane named " "
+				format gui slot 27 of player with red hardened clay named "&cType de Ban &a➜ Cheat" to run player command "/moderation %arg 1% §cheatban"
+				format gui slot 28 of player with red hardened clay named "&cType de Ban &a➜ Anti-Jeu" to run player command "/moderation %arg 1% §anti-Jeu"
+				format gui slot 29 of player with red hardened clay named "&cType de Ban &a➜ Use-Bug" to run player command "/moderation %arg 1% §Use-Bug"
+			if arg 2 is "§banip":
+				open virtual chest inventory with size 6 with name "&6« Modération »" to player
+				format gui slot 4 of player with skull of "%arg 1%" parsed as offline player named "&a« &a%arg 1% »"
+				format gui slot 9 of player with red hardened clay named "&7« &4Temp-Ban &7» &7%arg 1%" to run player command "/moderation %arg 1% §tempban"
+				format gui slot 10 of player with red hardened clay named "&7« &4Ban-Ip &7» &7%arg 1%" to run player command "/moderation %arg 1% §banip"
+				format gui slot 11 of player with red hardened clay named "&7« &4Ban &7» &7%arg 1%" to run player command "/moderation %arg 1% §ban"
+				format gui slot 12 of player with orange hardened clay named "&7« &4Kick &7» &7%arg 1%" to run player command "/moderation %arg 1% §kick"
+				format gui slot 13 of player with orange hardened clay named "&7« &4Kick All &7» &7%arg 1%" to run player command "/moderation %arg 1% §kickall"
+				format gui slot 14 of player with light green clay named "&7« &4Avertissement &7» &7%arg 1%" to run player command "/moderation %arg 1% §avertissement"
+				format gui slot 15 of player with light blue hardened clay named "&7« &4Freeze &7» &7%arg 1%" to run player command "/moderation %arg 1% §freeze"
+				format gui slot 16 of player with white hardened clay named "&7« &4Mute &7» &7%arg 1%" to run player command "/moderation %arg 1% §mute"
+				make a gui slot 18, 19, 20, 21, 22, 23, 24, 25 and 26 of player with 1 stained glass pane named " "
+				format gui slot 27 of player with red hardened clay named "&cRaison &a➜ Aimbot" to run player command "/§msgjsonapi banipaimbot %arg 1%"
+				format gui slot 28 of player with red hardened clay named "&cRaison &a➜ Anti-KnockBack" to run player command "/§msgjsonapi banipantikb %arg 1%"
+				format gui slot 29 of player with red hardened clay named "&cRaison &a➜ AutoClick" to run player command "/§msgjsonapi banipautoclick %arg 1%"
+				format gui slot 30 of player with red hardened clay named "&cRaison &a➜ Bow Aimbot" to run player command "/§msgjsonapi banipbowaimbot %arg 1%"
+				format gui slot 31 of player with red hardened clay named "&cRaison &a➜ SpeedHack" to run player command "/§msgjsonapi banipspeedhack %arg 1%"
+				format gui slot 32 of player with red hardened clay named "&cRaison &a➜ Fly" to run player command "/§msgjsonapi banipfly %arg 1%"
+				format gui slot 33 of player with red hardened clay named "&cRaison &a➜ ForceField" to run player command "/§msgjsonapi banipforcefield %arg 1%"
+				format gui slot 34 of player with red hardened clay named "&cRaison &a➜ Kill-Aura" to run player command "/§msgjsonapi banipkillaura %arg 1%"
+				format gui slot 35 of player with red hardened clay named "&cRaison &a➜ NoFall" to run player command "/§msgjspnapi banipnofall %arg 1%"
+				format gui slot 36 of player with red hardened clay named "&cRaison &a➜ Nuker" to run player command "/§msgjsonapi banipnuker %arg 1%"
+				format gui slot 37 of player with red hardened clay named "&cRaison &a➜ FastBow" to run player command "/§msgjsonapi banipfastbow %arg 1%"
+				format gui slot 38 of player with red hardened clay named "&cRaison &a➜ VanillaTP" to run player command "/§msgjsonapi banipvanillatp %arg 1%"
+				format gui slot 39 of player with red hardened clay named "&cRaison &a➜ X-Ray" to run player command "/§msgjsonapi banipxray %arg 1%"
+			if arg 2 is "§cheatban":
+				open virtual chest inventory with size 6 with name "&6« Modération »" to player
+				format gui slot 4 of player with skull of "%arg 1%" parsed as offline player named "&a« &a%arg 1% »"
+				format gui slot 9 of player with red hardened clay named "&7« &4Temp-Ban &7» &7%arg 1%" to run player command "/moderation %arg 1% §tempban"
+				format gui slot 10 of player with red hardened clay named "&7« &4Ban-Ip &7» &7%arg 1%" to run player command "/moderation %arg 1% §banip"
+				format gui slot 11 of player with red hardened clay named "&7« &4Ban &7» &7%arg 1%" to run player command "/moderation %arg 1% §ban"
+				format gui slot 12 of player with orange hardened clay named "&7« &4Kick &7» &7%arg 1%" to run player command "/moderation %arg 1% §kick"
+				format gui slot 13 of player with orange hardened clay named "&7« &4Kick All &7» &7%arg 1%" to run player command "/moderation %arg 1% §kickall"
+				format gui slot 14 of player with light green clay named "&7« &4Avertissement &7» &7%arg 1%" to run player command "/moderation %arg 1% §avertissement"
+				format gui slot 15 of player with light blue hardened clay named "&7« &4Freeze &7» &7%arg 1%" to run player command "/moderation %arg 1% §freeze"
+				format gui slot 16 of player with white hardened clay named "&7« &4Mute &7» &7%arg 1%" to run player command "/moderation %arg 1% §mute"
+				make a gui slot 18, 19, 20, 21, 22, 23, 24, 25 and 26 of player with 1 stained glass pane named " "
+				format gui slot 27 of player with red hardened clay named "&cRaison &a➜ Aimbot Refus De Verif" to run player command "/§msgjsonapi banaimbot %arg 1%"
+				format gui slot 28 of player with red hardened clay named "&cRaison &a➜ Anti-KnockBack Refus De Verif" to run player command "/§msgjsonapi banantikb %arg 1%"
+				format gui slot 29 of player with red hardened clay named "&cRaison &a➜ AutoClick Refus De Verif" to run player command "/§msgjsonapi banautoclick %arg 1%"
+				format gui slot 30 of player with red hardened clay named "&cRaison &a➜ Bow Aimbot Refus De Verif" to run player command "/§msgjsonapi banbowaimbot %arg 1%"
+				format gui slot 31 of player with red hardened clay named "&cRaison &a➜ SpeedHack Refus De Verif" to run player command "/§msgjsonapi banspeedhack %arg 1%"
+				format gui slot 32 of player with red hardened clay named "&cRaison &a➜ Fly Refus De Verif" to run player command "/§msgjsonapi banfly %arg 1%"
+				format gui slot 33 of player with red hardened clay named "&cRaison &a➜ ForceField Refus De Verif" to run player command "/§msgjsonapi banforcefield %arg 1%"
+				format gui slot 34 of player with red hardened clay named "&cRaison &a➜ Kill-Aura Refus De Verif" to run player command "/§msgjsonapi bankillaura %arg 1%"
+				format gui slot 35 of player with red hardened clay named "&cRaison &a➜ NoFall Refus De Verif" to run player command "/§msgjsonapi bannofall %arg 1%"
+				format gui slot 36 of player with red hardened clay named "&cRaison &a➜ Nuker Refus De Verif" to run player command "/§msgjsonapi bannuker %arg 1%"
+				format gui slot 37 of player with red hardened clay named "&cRaison &a➜ FastBow Refus De Verif" to run player command "/§msgjsonapi banfastbow %arg 1%"
+				format gui slot 38 of player with red hardened clay named "&cRaison &a➜ VanillaTP Refus De Verif" to run player command "/§msgjsonapi banvanillatp %arg 1%"
+				format gui slot 39 of player with red hardened clay named "&cRaison &a➜ X-Ray Refus De Verif" to run player command "/§msgjsonapi banxray %arg 1%"
+			if arg 2 is "§tempban":
+				open virtual chest inventory with size 6 with name "&6« Modération »" to player
+				format gui slot 4 of player with skull of "%arg 1%" parsed as offline player named "&a« &a%arg 1% »"
+				format gui slot 9 of player with red hardened clay named "&7« &4Temp-Ban &7» &7%arg 1%" to run player command "/moderation %arg 1% §tempban"
+				format gui slot 10 of player with red hardened clay named "&7« &4Ban-Ip &7» &7%arg 1%" to run player command "/moderation %arg 1% §banip"
+				format gui slot 11 of player with red hardened clay named "&7« &4Ban &7» &7%arg 1%" to run player command "/moderation %arg 1% §ban"
+				format gui slot 12 of player with orange hardened clay named "&7« &4Kick &7» &7%arg 1%" to run player command "/moderation %arg 1% §kick"
+				format gui slot 13 of player with orange hardened clay named "&7« &4Kick All &7» &7%arg 1%" to run player command "/moderation %arg 1% §kickall"
+				format gui slot 14 of player with light green clay named "&7« &4Avertissement &7» &7%arg 1%" to run player command "/moderation %arg 1% §avertissement"
+				format gui slot 15 of player with light blue hardened clay named "&7« &4Freeze &7» &7%arg 1%" to run player command "/moderation %arg 1% §freeze"
+				format gui slot 16 of player with white hardened clay named "&7« &4Mute &7» &7%arg 1%" to run player command "/moderation %arg 1% §mute"
+				make a gui slot 18, 19, 20, 21, 22, 23, 24, 25 and 26 of player with 1 stained glass pane named " "
+				format gui slot 27 of player with red hardened clay named "&cType de Ban &a➜ Cheat" to run player command "/moderation %arg 1% §cheattempban"
+			if arg 2 is "§cheattempban":
+				open virtual chest inventory with size 6 with name "&6« Modération »" to player
+				format gui slot 4 of player with skull of "%arg 1%" parsed as offline player named "&a« &a%arg 1% »"
+				format gui slot 9 of player with red hardened clay named "&7« &4Temp-Ban &7» &7%arg 1%" to run player command "/moderation %arg 1% §tempban"
+				format gui slot 10 of player with red hardened clay named "&7« &4Ban-Ip &7» &7%arg 1%" to run player command "/moderation %arg 1% §banip"
+				format gui slot 11 of player with red hardened clay named "&7« &4Ban &7» &7%arg 1%" to run player command "/moderation %arg 1% §ban"
+				format gui slot 12 of player with orange hardened clay named "&7« &4Kick &7» &7%arg 1%" to run player command "/moderation %arg 1% §kick"
+				format gui slot 13 of player with orange hardened clay named "&7« &4Kick All &7» &7%arg 1%" to run player command "/moderation %arg 1% §kickall"
+				format gui slot 14 of player with light green clay named "&7« &4Avertissement &7» &7%arg 1%" to run player command "/moderation %arg 1% §avertissement"
+				format gui slot 15 of player with light blue hardened clay named "&7« &4Freeze &7» &7%arg 1%" to run player command "/moderation %arg 1% §freeze"
+				format gui slot 16 of player with white hardened clay named "&7« &4Mute &7» &7%arg 1%" to run player command "/moderation %arg 1% §mute"
+				make a gui slot 18, 19, 20, 21, 22, 23, 24, 25 and 26 of player with 1 stained glass pane named " "
+				format gui slot 27 of player with red hardened clay named "&cRaison &a➜ Aimbot" to run player command "/§msgjsonapi tempbanaimbot %arg 1%"
+				format gui slot 28 of player with red hardened clay named "&cRaison &a➜ Anti-KnockBack" to run player command "/§msgjsonapi tempbanantikb %arg 1%"
+				format gui slot 29 of player with red hardened clay named "&cRaison &a➜ AutoClick" to run player command "/§msgjsonapi tempbanautoclick %arg 1%"
+				format gui slot 30 of player with red hardened clay named "&cRaison &a➜ Bow Aimbot" to run player command "/§msgjsonapi tempbanbowaimbot %arg 1%"
+				format gui slot 31 of player with red hardened clay named "&cRaison &a➜ SpeedHack" to run player command "/§msgjsonapi tempbanspeedhack %arg 1%"
+				format gui slot 32 of player with red hardened clay named "&cRaison &a➜ Fly" to run player command "/§msgjsonapi tempbanfly %arg 1%"
+				format gui slot 33 of player with red hardened clay named "&cRaison &a➜ ForceField" to run player command "/§msgjsonapi tempbanforcefield %arg 1%"
+				format gui slot 34 of player with red hardened clay named "&cRaison &a➜ Kill-Aura" to run player command "/§msgjsonapi tempbankillaura %arg 1%"
+				format gui slot 35 of player with red hardened clay named "&cRaison &a➜ NoFall" to run player command "/§msgjsonapi tempbannofall %arg 1%"
+				format gui slot 36 of player with red hardened clay named "&cRaison &a➜ Nuker" to run player command "/§msgjsonapi tempbannuker %arg 1%"
+				format gui slot 37 of player with red hardened clay named "&cRaison &a➜ FastBow" to run player command "/§msgjsonapi tempbanfastbow %arg 1%"
+				format gui slot 38 of player with red hardened clay named "&cRaison &a➜ VanillaTP" to run player command "/§msgjsonapi tempbanvanillatp %arg 1%"
+				format gui slot 39 of player with red hardened clay named "&cRaison &a➜ X-Ray" to run player command "/§msgjsonapi tempbanxray %arg 1%"
+			if arg 2 is "§kickall":
+				open virtual chest inventory with size 6 with name "&6« Modération »" to player
+				format gui slot 4 of player with skull of "%arg 1%" parsed as offline player named "&a« &a%arg 1% »"
+				format gui slot 9 of player with red hardened clay named "&7« &4Temp-Ban &7» &7%arg 1%" to run player command "/moderation %arg 1% §tempban"
+				format gui slot 10 of player with red hardened clay named "&7« &4Ban-Ip &7» &7%arg 1%" to run player command "/moderation %arg 1% §banip"
+				format gui slot 11 of player with red hardened clay named "&7« &4Ban &7» &7%arg 1%" to run player command "/moderation %arg 1% §ban"
+				format gui slot 12 of player with orange hardened clay named "&7« &4Kick &7» &7%arg 1%" to run player command "/moderation %arg 1% §kick"
+				format gui slot 13 of player with orange hardened clay named "&7« &4Kick All &7» &7%arg 1%" to run player command "/moderation %arg 1% §kickall"
+				format gui slot 14 of player with light green clay named "&7« &4Avertissement &7» &7%arg 1%" to run player command "/moderation %arg 1% §avertissement"
+				format gui slot 15 of player with light blue hardened clay named "&7« &4Freeze &7» &7%arg 1%" to run player command "/moderation %arg 1% §freeze"
+				format gui slot 16 of player with white hardened clay named "&7« &4Mute &7» &7%arg 1%" to run player command "/moderation %arg 1% §mute"
+				make a gui slot 18, 19, 20, 21, 22, 23, 24, 25 and 26 of player with 1 stained glass pane named " "
+				format gui slot 27 of player with orange hardened clay named "&cRaison &a➜ Redémarrage Du Serveur" to run player command "/kickall Redémarrage Du Serveur"
+				format gui slot 28 of player with orange hardened clay named "&cRaison &a➜ Reload Du Serveur" to run player command "/kickall Reload Du Serveur"
+				format gui slot 29 of player with orange hardened clay named "&cRaison &a➜ Bug De Serveur" to run player command "/kickall Bug De Serveur"
+				format gui slot 30 of player with orange hardened clay named "&cRaison &a➜ Crash De Serveur" to run player command "/kickall Crash De Serveur"
+			if arg 2 is "§kick":
+				open virtual chest inventory with size 6 with name "&6« Modération »" to player
+				format gui slot 4 of player with skull of "%arg 1%" parsed as offline player named "&a« &a%arg 1% »"
+				format gui slot 9 of player with red hardened clay named "&7« &4Temp-Ban &7» &7%arg 1%" to run player command "/moderation %arg 1% §tempban"
+				format gui slot 10 of player with red hardened clay named "&7« &4Ban-Ip &7» &7%arg 1%" to run player command "/moderation %arg 1% §banip"
+				format gui slot 11 of player with red hardened clay named "&7« &4Ban &7» &7%arg 1%" to run player command "/moderation %arg 1% §ban"
+				format gui slot 12 of player with orange hardened clay named "&7« &4Kick &7» &7%arg 1%" to run player command "/moderation %arg 1% §kick"
+				format gui slot 13 of player with orange hardened clay named "&7« &4Kick All &7» &7%arg 1%" to run player command "/moderation %arg 1% §kickall"
+				format gui slot 14 of player with light green clay named "&7« &4Avertissement &7» &7%arg 1%" to run player command "/moderation %arg 1% §avertissement"
+				format gui slot 15 of player with light blue hardened clay named "&7« &4Freeze &7» &7%arg 1%" to run player command "/moderation %arg 1% §freeze"
+				format gui slot 16 of player with white hardened clay named "&7« &4Mute &7» &7%arg 1%" to run player command "/moderation %arg 1% §mute"
+				make a gui slot 18, 19, 20, 21, 22, 23, 24, 25 and 26 of player with 1 stained glass pane named " "
+				format gui slot 27 of player with orange hardened clay named "&cRaison &a➜ Anti-Jeu" to run player command "/kick %arg 1% Anti-Jeu"
+				format gui slot 28 of player with orange hardened clay named "&cRaison &a➜ Lag" to run player command "/kick %arg 1% Lag"
+				format gui slot 29 of player with orange hardened clay named "&cRaison &a➜ Use-Bug" to run player command "/kick %arg 1% Use-Bug"
+				format gui slot 30 of player with orange hardened clay named "&cRaison &a➜ Spam" to run player command "/kick %arg 1% Spam"
+				format gui slot 31 of player with orange hardened clay named "&cRaison &a➜ Insultes" to run player command "/kick %arg 1% Insultes"
+				format gui slot 32 of player with orange hardened clay named "&cRaison &a➜ Spam" to run player command "/kick %arg 1% Spam"
+			if arg 2 is "§freeze":
+				open virtual chest inventory with size 6 with name "&6« Modération »" to player
+				format gui slot 4 of player with skull of "%arg 1%" parsed as offline player named "&a« &a%arg 1% »"
+				format gui slot 9 of player with red hardened clay named "&7« &4Temp-Ban &7» &7%arg 1%" to run player command "/moderation %arg 1% §tempban"
+				format gui slot 10 of player with red hardened clay named "&7« &4Ban-Ip &7» &7%arg 1%" to run player command "/moderation %arg 1% §banip"
+				format gui slot 11 of player with red hardened clay named "&7« &4Ban &7» &7%arg 1%" to run player command "/moderation %arg 1% §ban"
+				format gui slot 12 of player with orange hardened clay named "&7« &4Kick &7» &7%arg 1%" to run player command "/moderation %arg 1% §kick"
+				format gui slot 13 of player with orange hardened clay named "&7« &4Kick All &7» &7%arg 1%" to run player command "/moderation %arg 1% §kickall"
+				format gui slot 14 of player with light green clay named "&7« &4Avertissement &7» &7%arg 1%" to run player command "/moderation %arg 1% §avertissement"
+				format gui slot 15 of player with light blue hardened clay named "&7« &4Freeze &7» &7%arg 1%" to run player command "/moderation %arg 1% §freeze"
+				format gui slot 16 of player with white hardened clay named "&7« &4Mute &7» &7%arg 1%" to run player command "/moderation %arg 1% §mute"
+				make a gui slot 18, 19, 20, 21, 22, 23, 24, 25 and 26 of player with 1 stained glass pane named " "
+				format gui slot 27 of player with light blue clay named "&cRaison &a➜ Cheat" to run player command "/moderation %arg 1% §freezecheat"
+				format gui slot 28 of player with light blue clay named "&cRaison &a➜ Anti-Jeu" to run player command "/moderation %arg 1% §freezeantijeu"
+				format gui slot 29 of player with light blue clay named "&cRaison &a➜ Use-Bug" to run player command "/moderation %arg 1% §freezeusebug"
+			if arg 2 is "§freezecheat":
+				open virtual chest inventory with size 6 with name "&6« Modération »" to player
+				format gui slot 4 of player with skull of "%arg 1%" parsed as offline player named "&a« &a%arg 1% »"
+				format gui slot 9 of player with red hardened clay named "&7« &4Temp-Ban &7» &7%arg 1%" to run player command "/moderation %arg 1% §tempban"
+				format gui slot 10 of player with red hardened clay named "&7« &4Ban-Ip &7» &7%arg 1%" to run player command "/moderation %arg 1% §banip"
+				format gui slot 11 of player with red hardened clay named "&7« &4Ban &7» &7%arg 1%" to run player command "/moderation %arg 1% §ban"
+				format gui slot 12 of player with orange hardened clay named "&7« &4Kick &7» &7%arg 1%" to run player command "/moderation %arg 1% §kick"
+				format gui slot 13 of player with orange hardened clay named "&7« &4Kick All &7» &7%arg 1%" to run player command "/moderation %arg 1% §kickall"
+				format gui slot 14 of player with light green clay named "&7« &4Avertissement &7» &7%arg 1%" to run player command "/moderation %arg 1% §avertissement"
+				format gui slot 15 of player with light blue hardened clay named "&7« &4Freeze &7» &7%arg 1%" to run player command "/moderation %arg 1% §freeze"
+				format gui slot 16 of player with white hardened clay named "&7« &4Mute &7» &7%arg 1%" to run player command "/moderation %arg 1% §mute"
+				make a gui slot 18, 19, 20, 21, 22, 23, 24, 25 and 26 of player with 1 stained glass pane named " "
+				format gui slot 27 of player with light blue hardened clay named "&cRaison &a➜ Aimbot" to run player command "/freeze %arg 1% Aimbot"
+				format gui slot 28 of player with light blue hardened clay named "&cRaison &a➜ Anti-KnockBack" to run player command "/freeze %arg 1% Anti-KnockBack"
+				format gui slot 29 of player with light blue hardened clay named "&cRaison &a➜ AutoClick" to run player command "/freeze %arg 1% AutoClick"
+				format gui slot 30 of player with light blue hardened clay named "&cRaison &a➜ Bow Aimbot" to run player command "/freeze %arg 1% Bow Aimbot"
+				format gui slot 31 of player with light blue hardened clay named "&cRaison &a➜ SpeedHack" to run player command "/freeze %arg 1% SpeedHack"
+				format gui slot 32 of player with light blue hardened clay named "&cRaison &a➜ Fly" to run player command "/freeze %arg 1% Fly"
+				format gui slot 33 of player with light blue hardened clay named "&cRaison &a➜ ForceField" to run player command "/freeze %arg 1% ForceField"
+				format gui slot 34 of player with light blue hardened clay named "&cRaison &a➜ Kill-Aura" to run player command "/freeze %arg 1% Kill-Aura"
+				format gui slot 35 of player with light blue hardened clay named "&cRaison &a➜ NoFall" to run player command "/freeze %arg 1% NoFall"
+				format gui slot 36 of player with light blue hardened clay named "&cRaison &a➜ Nuker" to run player command "/freeze %arg 1% Nuker"
+				format gui slot 37 of player with light blue hardened clay named "&cRaison &a➜ FastBow" to run player command "/freeze %arg 1% FastBow"
+				format gui slot 38 of player with light blue hardened clay named "&cRaison &a➜ VanillaTP" to run player command "/freeze %arg 1% VanillaTP"
+				format gui slot 39 of player with light blue hardened clay named "&cRaison &a➜ X-Ray" to run player command "/freeze %arg 1% X-Ray"
+			if arg 2 is "§freezeantijeu":
+				open virtual chest inventory with size 6 with name "&6« Modération »" to player
+				format gui slot 4 of player with skull of "%arg 1%" parsed as offline player named "&a« &a%arg 1% »"
+				format gui slot 9 of player with red hardened clay named "&7« &4Temp-Ban &7» &7%arg 1%" to run player command "/moderation %arg 1% §tempban"
+				format gui slot 10 of player with red hardened clay named "&7« &4Ban-Ip &7» &7%arg 1%" to run player command "/moderation %arg 1% §banip"
+				format gui slot 11 of player with red hardened clay named "&7« &4Ban &7» &7%arg 1%" to run player command "/moderation %arg 1% §ban"
+				format gui slot 12 of player with orange hardened clay named "&7« &4Kick &7» &7%arg 1%" to run player command "/moderation %arg 1% §kick"
+				format gui slot 13 of player with orange hardened clay named "&7« &4Kick All &7» &7%arg 1%" to run player command "/moderation %arg 1% §kickall"
+				format gui slot 14 of player with light green clay named "&7« &4Avertissement &7» &7%arg 1%" to run player command "/moderation %arg 1% §avertissement"
+				format gui slot 15 of player with light blue hardened clay named "&7« &4Freeze &7» &7%arg 1%" to run player command "/moderation %arg 1% §freeze"
+				format gui slot 16 of player with white hardened clay named "&7« &4Mute &7» &7%arg 1%" to run player command "/moderation %arg 1% §mute"
+				make a gui slot 18, 19, 20, 21, 22, 23, 24, 25 and 26 of player with 1 stained glass pane named " "
+				format gui slot 27 of player with light blue hardened clay named "&cRaison &a➜ Spawn-Kill" to run player command "/freeze %arg 1% Spawn-Kill"
+			if arg 2 is "§freezeusebug":
+				open virtual chest inventory with size 6 with name "&6« Modération »" to player
+				format gui slot 4 of player with skull of "%arg 1%" parsed as offline player named "&a« &a%arg 1% »"
+				format gui slot 9 of player with red hardened clay named "&7« &4Temp-Ban &7» &7%arg 1%" to run player command "/moderation %arg 1% §tempban"
+				format gui slot 10 of player with red hardened clay named "&7« &4Ban-Ip &7» &7%arg 1%" to run player command "/moderation %arg 1% §banip"
+				format gui slot 11 of player with red hardened clay named "&7« &4Ban &7» &7%arg 1%" to run player command "/moderation %arg 1% §ban"
+				format gui slot 12 of player with orange hardened clay named "&7« &4Kick &7» &7%arg 1%" to run player command "/moderation %arg 1% §kick"
+				format gui slot 13 of player with orange hardened clay named "&7« &4Kick All &7» &7%arg 1%" to run player command "/moderation %arg 1% §kickall"
+				format gui slot 14 of player with light green clay named "&7« &4Avertissement &7» &7%arg 1%" to run player command "/moderation %arg 1% §avertissement"
+				format gui slot 15 of player with light blue hardened clay named "&7« &4Freeze &7» &7%arg 1%" to run player command "/moderation %arg 1% §freeze"
+				format gui slot 16 of player with white hardened clay named "&7« &4Mute &7» &7%arg 1%" to run player command "/moderation %arg 1% §mute"
+				make a gui slot 18, 19, 20, 21, 22, 23, 24, 25 and 26 of player with 1 stained glass pane named " "
+			if arg 2 is "§avertissement":
+				open virtual chest inventory with size 6 with name "&6« Modération »" to player
+				format gui slot 4 of player with skull of "%arg 1%" parsed as offline player named "&a« &a%arg 1% »"
+				format gui slot 9 of player with red hardened clay named "&7« &4Temp-Ban &7» &7%arg 1%" to run player command "/moderation %arg 1% §tempban"
+				format gui slot 10 of player with red hardened clay named "&7« &4Ban-Ip &7» &7%arg 1%" to run player command "/moderation %arg 1% §banip"
+				format gui slot 11 of player with red hardened clay named "&7« &4Ban &7» &7%arg 1%" to run player command "/moderation %arg 1% §ban"
+				format gui slot 12 of player with orange hardened clay named "&7« &4Kick &7» &7%arg 1%" to run player command "/moderation %arg 1% §kick"
+				format gui slot 13 of player with orange hardened clay named "&7« &4Kick All &7» &7%arg 1%" to run player command "/moderation %arg 1% §kickall"
+				format gui slot 14 of player with light green clay named "&7« &4Avertissement &7» &7%arg 1%" to run player command "/moderation %arg 1% §avertissement"
+				format gui slot 15 of player with light blue hardened clay named "&7« &4Freeze &7» &7%arg 1%" to run player command "/moderation %arg 1% §freeze"
+				format gui slot 16 of player with white hardened clay named "&7« &4Mute &7» &7%arg 1%" to run player command "/moderation %arg 1% §mute"
+				make a gui slot 18, 19, 20, 21, 22, 23, 24, 25 and 26 of player with 1 stained glass pane named " "
+				format gui slot 27 of player with light green clay named "&cType &a➜ Jeu" to run player command "/moderation %arg 1% §avertissementjeu"
+				format gui slot 28 of player with light green clay named "&cType &a➜ Chat" to run player command "/moderation %arg 1% §avertissementchat"
+			if arg 2 is "§avertissementjeu":
+				open virtual chest inventory with size 6 with name "&6« Modération »" to player
+				format gui slot 4 of player with skull of "%arg 1%" parsed as offline player named "&a« &a%arg 1% »"
+				format gui slot 9 of player with red hardened clay named "&7« &4Temp-Ban &7» &7%arg 1%" to run player command "/moderation %arg 1% §tempban"
+				format gui slot 10 of player with red hardened clay named "&7« &4Ban-Ip &7» &7%arg 1%" to run player command "/moderation %arg 1% §banip"
+				format gui slot 11 of player with red hardened clay named "&7« &4Ban &7» &7%arg 1%" to run player command "/moderation %arg 1% §ban"
+				format gui slot 12 of player with orange hardened clay named "&7« &4Kick &7» &7%arg 1%" to run player command "/moderation %arg 1% §kick"
+				format gui slot 13 of player with orange hardened clay named "&7« &4Kick All &7» &7%arg 1%" to run player command "/moderation %arg 1% §kickall"
+				format gui slot 14 of player with light green clay named "&7« &4Avertissement &7» &7%arg 1%" to run player command "/moderation %arg 1% §avertissement"
+				format gui slot 15 of player with light blue hardened clay named "&7« &4Freeze &7» &7%arg 1%" to run player command "/moderation %arg 1% §freeze"
+				format gui slot 16 of player with white hardened clay named "&7« &4Mute &7» &7%arg 1%" to run player command "/moderation %arg 1% §mute"
+				make a gui slot 18, 19, 20, 21, 22, 23, 24, 25 and 26 of player with 1 stained glass pane named " "
+				format gui slot 27 of player with light green clay named "&cAvertissement &a➜ Aimbot" to run player command "/avertissement %arg 1% Aimbot"
+				format gui slot 28 of player with light green clay named "&cAvertissement &a➜ Anti-KnockBack" to run player command "/avertissement %arg 1% Anti-KnockBack"
+				format gui slot 29 of player with light green clay named "&cAvertissement &a➜ AutoClick" to run player command "/avertissement %arg 1% AutoClick"
+				format gui slot 30 of player with light green clay named "&cAvertissement &a➜ Bow Aimbot" to run player command "/avertissement %arg 1% Bow-Aimbot"
+				format gui slot 31 of player with light green clay named "&cAvertissement &a➜ SpeedHack" to run player command "/avertissement %arg 1% SpeedHack"
+				format gui slot 32 of player with light green clay named "&cAvertissement &a➜ Fly" to run player command "/avertissement %arg 1% Fly"
+				format gui slot 33 of player with light green clay named "&cAvertissement &a➜ ForceField" to run player command "/avertissement %arg 1% ForceField"
+				format gui slot 34 of player with light green clay named "&cAvertissement &a➜ Kill-Aura" to run player command "/avertissement %arg 1% Kill-Aura"
+				format gui slot 35 of player with light green clay named "&cAvertissement &a➜ NoFall" to run player command "/avertissement %arg 1% NoFall"
+				format gui slot 36 of player with light green clay named "&cAvertissement &a➜ Nuker" to run player command "/avertissement %arg 1% Nuker"
+				format gui slot 37 of player with light green clay named "&cAvertissement &a➜ FastBow" to run player command "/avertissement %arg 1% FastBow"
+				format gui slot 38 of player with light green clay named "&cAvertissement &a➜ VanillaTP" to run player command "/avertissement %arg 1% VanillaTP"
+				format gui slot 39 of player with light green clay named "&cAvertissement &a➜ X-Ray" to run player command "/avertissement %arg 1% X-Ray"
+			if arg 2 is "§avertissementchat":
+				open virtual chest inventory with size 6 with name "&6« Modération »" to player
+				format gui slot 4 of player with skull of "%arg 1%" parsed as offline player named "&a« &a%arg 1% »"
+				format gui slot 9 of player with red hardened clay named "&7« &4Temp-Ban &7» &7%arg 1%" to run player command "/moderation %arg 1% §tempban"
+				format gui slot 10 of player with red hardened clay named "&7« &4Ban-Ip &7» &7%arg 1%" to run player command "/moderation %arg 1% §banip"
+				format gui slot 11 of player with red hardened clay named "&7« &4Ban &7» &7%arg 1%" to run player command "/moderation %arg 1% §ban"
+				format gui slot 12 of player with orange hardened clay named "&7« &4Kick &7» &7%arg 1%" to run player command "/moderation %arg 1% §kick"
+				format gui slot 13 of player with orange hardened clay named "&7« &4Kick All &7» &7%arg 1%" to run player command "/moderation %arg 1% §kickall"
+				format gui slot 14 of player with light green clay named "&7« &4Avertissement &7» &7%arg 1%" to run player command "/moderation %arg 1% §avertissement"
+				format gui slot 15 of player with light blue hardened clay named "&7« &4Freeze &7» &7%arg 1%" to run player command "/moderation %arg 1% §freeze"
+				format gui slot 16 of player with white hardened clay named "&7« &4Mute &7» &7%arg 1%" to run player command "/moderation %arg 1% §mute"
+				make a gui slot 18, 19, 20, 21, 22, 23, 24, 25 and 26 of player with 1 stained glass pane named " "
+				format gui slot 27 of player with light green clay named "&cAvertissement &a➜ Spam" to run player command "/avertissement %arg 1% Spam"
+				format gui slot 28 of player with light green clay named "&cAvertissement &a➜ Pub" to run player command "/avertissement %arg 1% Pub"
+				format gui slot 29 of player with light green clay named "&cAvertissement &a➜ Insulte" to run player command "/avertissement %arg 1% Insulte"
+				format gui slot 30 of player with light green clay named "&cAvertissement &a➜ Menace" to run player command "/avertissement %arg 1% Menace"
+			if arg 2 is "§mute":
+				open virtual chest inventory with size 6 with name "&6« Modération »" to player
+				format gui slot 4 of player with skull of "%arg 1%" parsed as offline player named "&a« &a%arg 1% »"
+				format gui slot 9 of player with red hardened clay named "&7« &4Temp-Ban &7» &7%arg 1%" to run player command "/moderation %arg 1% §tempban"
+				format gui slot 10 of player with red hardened clay named "&7« &4Ban-Ip &7» &7%arg 1%" to run player command "/moderation %arg 1% §banip"
+				format gui slot 11 of player with red hardened clay named "&7« &4Ban &7» &7%arg 1%" to run player command "/moderation %arg 1% §ban"
+				format gui slot 12 of player with orange hardened clay named "&7« &4Kick &7» &7%arg 1%" to run player command "/moderation %arg 1% §kick"
+				format gui slot 13 of player with orange hardened clay named "&7« &4Kick All &7» &7%arg 1%" to run player command "/moderation %arg 1% §kickall"
+				format gui slot 14 of player with light green clay named "&7« &4Avertissement &7» &7%arg 1%" to run player command "/moderation %arg 1% §avertissement"
+				format gui slot 15 of player with light blue hardened clay named "&7« &4Freeze &7» &7%arg 1%" to run player command "/moderation %arg 1% §freeze"
+				format gui slot 16 of player with white hardened clay named "&7« &4Mute &7» &7%arg 1%" to run player command "/moderation %arg 1% §mute"
+				make a gui slot 18, 19, 20, 21, 22, 23, 24, 25 and 26 of player with 1 stained glass pane named " "
+				format gui slot 27 of player with white hardened clay named "&7« &4Spam &7» &7%arg 1%" to run player command "/mute %arg 1% {@mutespam} Spam"
+				format gui slot 28 of player with white hardened clay named "&7« &4Pub &7» &7%arg 1%" to run player command "/mute %arg 1% {@mutepub} Pub"
+				format gui slot 29 of player with white hardened clay named "&7« &4Insulte &7» &7%arg 1%" to run player command "/mute %arg 1% {@muteinsulte} Insulte"
+				format gui slot 30 of player with white hardened clay named "&7« &4Menace &7» &7%arg 1%" to run player command "/mute %arg 1% {@mutemenace} Menace"
+
+#===================================#
+
+      #---- Partie Report ----#
+
+#===================================#
+
+command /report [<offline player>] [<text>]:
+	trigger:
+		if arg 1 is set:
+			if arg 1 is online:
+				if arg 2 is not set:
+					open virtual chest inventory with size 6 with name "&6« Modération »" to player
+					format gui slot 4 of player with skull of "%arg 1%" parsed as offline player named "&f» &a%arg 1%"
+					format gui slot 9 of player with light green clay named "&7« &4Cheat &7» &7%arg 1%" to run player command "/report %arg 1% §cheat"
+					format gui slot 10 of player with light green clay named "&7« &4Chat &7» &7%arg 1%" to run player command "/report %arg 1% §chat"
+					format gui slot 11 of player with light green clay named "&7« &4Autres &7» &7%arg 1%" to run player command "/report %arg 1% §autre"
+					make a gui slot 18, 19, 20, 21, 22, 23, 24, 25 and 26 of player with 1 stained glass pane named " "
+				if arg 2 is "§cheat":
+					open virtual chest inventory with size 6 with name "&6« Modération »" to player
+					format gui slot 4 of player with skull of "%arg 1%" parsed as offline player named "&f» &a%arg 1%"
+					format gui slot 9 of player with light green clay named "&7« &4Cheat &7» &7%arg 1%" to run player command "/report %arg 1% §cheat"
+					format gui slot 10 of player with light green clay named "&7« &4Chat &7» &7%arg 1%" to run player command "/report %arg 1% §chat"
+					format gui slot 11 of player with light green clay named "&7« &4Autres &7» &7%arg 1%" to run player command "/report %arg 1% §autre"
+					make a gui slot 18, 19, 20, 21, 22, 23, 24, 25 and 26 of player with 1 stained glass pane named " "
+					format gui slot 27 of player with light green clay named "&cReport &a➜ Aimbot" to run player command "/§report %arg 1% Aimbot"
+					format gui slot 28 of player with light green clay named "&cReport &a➜ Anti-KnockBack" to run player command "/§report %arg 1% Anti-KnockBack"
+					format gui slot 29 of player with light green clay named "&cReport &a➜ AutoClick" to run player command "/§report %arg 1% AutoClick"
+					format gui slot 30 of player with light green clay named "&cReport &a➜ Bow Aimbot" to run player command "/§report %arg 1% Bow-Aimbot"
+					format gui slot 31 of player with light green clay named "&cReport &a➜ SpeedHack" to run player command "/§report %arg 1% SpeedHack"
+					format gui slot 32 of player with light green clay named "&cReport &a➜ Fly" to run player command "/§report %arg 1% Fly"
+					format gui slot 33 of player with light green clay named "&cReport &a➜ ForceField" to run player command "/§report %arg 1% ForceField"
+					format gui slot 34 of player with light green clay named "&cReport &a➜ Kill-Aura" to run player command "/§report %arg 1% Kill-Aura"
+					format gui slot 35 of player with light green clay named "&cReport &a➜ NoFall" to run player command "/§report %arg 1% NoFall"
+					format gui slot 36 of player with light green clay named "&cReport &a➜ Nuker" to run player command "/§report %arg 1% Nuker"
+					format gui slot 37 of player with light green clay named "&cReport &a➜ FastBow" to run player command "/§report %arg 1% FastBow"
+					format gui slot 38 of player with light green clay named "&cReport &a➜ VanillaTP" to run player command "/§report %arg 1% VanillaTP"
+					format gui slot 39 of player with light green clay named "&cReport &a➜ X-Ray" to run player command "/§report %arg 1% X-Ray"
+				if arg 2 is "§chat":
+					open virtual chest inventory with size 6 with name "&6« Modération »" to player
+					format gui slot 4 of player with skull of "%arg 1%" parsed as offline player named "&f» &a%arg 1%"
+					format gui slot 9 of player with light green clay named "&7« &4Cheat &7» &7%arg 1%" to run player command "/report %arg 1% §cheat"
+					format gui slot 10 of player with light green clay named "&7« &4Chat &7» &7%arg 1%" to run player command "/report %arg 1% §chat"
+					format gui slot 11 of player with light green clay named "&7« &4Autres &7» &7%arg 1%" to run player command "/report %arg 1% §autre"
+					make a gui slot 18, 19, 20, 21, 22, 23, 24, 25 and 26 of player with 1 stained glass pane named " "
+					format gui slot 27 of player with light green clay named "&7« &4Spam &7» &7%arg 1%" to run player command "/§report %arg 1% Spam"
+					format gui slot 28 of player with light green clay named "&7« &4Pub &7» &7%arg 1%" to run player command "/§report %arg 1% Pub"
+					format gui slot 29 of player with light green clay named "&7« &4Insulte &7» &7%arg 1%" to run player command "/§report %arg 1% Insulte"
+					format gui slot 30 of player with light green clay named "&7« &4Menace &7» &7%arg 1%" to run player command "/§report %arg 1% Menace"
+				if arg 2 is "§autre":
+					open virtual chest inventory with size 6 with name "&6« Modération »" to player
+					format gui slot 4 of player with skull of "%arg 1%" parsed as offline player named "&f» &a%arg 1%"
+					format gui slot 9 of player with light green clay named "&7« &4Cheat &7» &7%arg 1%" to run player command "/report %arg 1% §cheat"
+					format gui slot 10 of player with light green clay named "&7« &4Chat &7» &7%arg 1%" to run player command "/report %arg 1% §chat"
+					format gui slot 11 of player with light green clay named "&7« &4Autres &7» &7%arg 1%" to run player command "/report %arg 1% §autre"
+					make a gui slot 18, 19, 20, 21, 22, 23, 24, 25 and 26 of player with 1 stained glass pane named " "
+					format gui slot 27 of player with light green clay named "&7« &4Pseudo Incorrect &7» &7%arg 1%" to run player command "/§report %arg 1% Pseudo Incorrect"
+					format gui slot 28 of player with light green clay named "&7« &4Skin Incorrect &7» &7%arg 1%" to run player command "/§report %arg 1% Skin Incorrect"
+			else:
+				send "{@prefixreport} &fLe joueur &a%arg 1% &fn'est pas en ligne !"
+		else:
+			send "{@prefixreport} &fQuelle joueur veux-tu report !"
+
+#===================================#
+
+    #---- Partie CONFIG TEMP ----#
+
+#===================================#
+
+command /settime [<text>] [<text>]:
+	permission: ADMIN
+	permission message: &cTu n'as pas la permission de set les temps de tempban &c&l[&cADMIN&c&l] &c!
+	trigger:
+		if arg 1 is "aimbot" or "antikb" or "autoclick" or "bowaimbot" or "speedhack" or "fly" or "forcefield" or "killaura" or "nofall" or "nuker" or "fastbow" or "vanillatp" or "xray":
+			if CheckTime(arg 2) is true:
+				set {time.%arg 1%} to arg 2
+				set {time.fr.%arg 1%} to arg 2
+				replace "s" with " seconde" in {time.fr.%arg 1%}
+				replace "h" with " heure" in {time.fr.%arg 1%}
+				replace "d" with " jour" in {time.fr.%arg 1%}
+				replace "m" with " minute" in {time.fr.%arg 1%}
+				send "{@prefix} &aVous avez set le temps du tempban de %arg 1% à %{time.fr.%arg 1%}%"
+				stop
+			else:
+				send "{@prefix} &cVous devez préciser une durée."
+				send "&cSecondes = s"
+				send "&cMinutes = m"
+				send "&cHeures = h"
+				send "&cJours = d"
+				stop
+		if arg 1 is not "aimbot" or "antikb" or "autoclick" or "bowaimbot" or "speedhack" or "fly" or "forcefield" or "killaura" or "nofall" or "nuker" or "fastbow" or "vanillatp" or "xray":
+			send "{@prefix} &aQuelle temps de ban veux-tu set ! / Aimbot / Antikb / Autoclick / Bowaimbot / Speedhack / Fly / ForceField / KillAura / NoFall / Nuker / FastBow / VanillaTP / Xray"
+
+#===================================#
+
+    #---- Partie INFOMOD ----#
+
+#===================================#
+
+command /infomod:
+	permission: MODO
+	permission message: &cTu n'as pas la permission de voir les infos &c&l[&cMODO&c&l]&c !
+	trigger:
+		if {time.aimbot} is not set:
+			broadcast "&a&l[&aAvertissement&a&l] &aLe temps du tempban pour Aimbot n'est pas set ! Merci de le faire pour régler les problèmes grâce à la commande /settime !"
+		if {time.antikb} is not set:
+			broadcast "&a&l[&aAvertissement&a&l] &aLe temps du tempban pour Anti-KnockBack n'est pas set ! Merci de le faire pour régler les problèmes grâce à la commande /settime !"
+		if {time.autoclick} is not set:
+			broadcast "&a&l[&aAvertissement&a&l] &aLe temps du tempban pour AutoClick n'est pas set ! Merci de le faire pour régler les problèmes grâce à la commande /settime !"
+		if {time.bowaimbot} is not set:
+			broadcast "&a&l[&aAvertissement&a&l] &aLe temps du tempban pour BowAimbot n'est pas set ! Merci de le faire pour régler les problèmes grâce à la commande /settime !"
+		if {time.speedhack} is not set:
+			broadcast "&a&l[&aAvertissement&a&l] &aLe temps du tempban pour SpeedHack n'est pas set ! Merci de le faire pour régler les problèmes grâce à la commande /settime !"
+		if {time.fly} is not set:
+			broadcast "&a&l[&aAvertissement&a&l] &aLe temps du tempban pour Fly n'est pas set ! Merci de le faire pour régler les problèmes grâce à la commande /settime !"
+		if {time.forcefield} is not set:
+			broadcast "&a&l[&aAvertissement&a&l] &aLe temps du tempban pour ForceField n'est pas set ! Merci de le faire pour régler les problèmes grâce à la commande /settime !"
+		if {time.killaura} is not set:
+			broadcast "&a&l[&aAvertissement&a&l] &aLe temps du tempban pour Kill-Aura n'est pas set ! Merci de le faire pour régler les problèmes grâce à la commande /settime !"
+		if {time.nofall} is not set:
+			broadcast "&a&l[&aAvertissement&a&l] &aLe temps du tempban pour NoFall n'est pas set ! Merci de le faire pour régler les problèmes grâce à la commande /settime !"
+		if {time.nuker} is not set:
+			broadcast "&a&l[&aAvertissement&a&l] &aLe temps du tempban pour Nuker n'est pas set ! Merci de le faire pour régler les problèmes grâce à la commande /settime !"
+		if {time.fastbow} is not set:
+			broadcast "&a&l[&aAvertissement&a&l] &aLe temps du tempban pour FastBow n'est pas set ! Merci de le faire pour régler les problèmes grâce à la commande /settime !"
+		if {time.vanillatp} is not set:
+			broadcast "&a&l[&aAvertissement&a&l] &aLe temps du tempban pour VanillaTP n'est pas set ! Merci de le faire pour régler les problèmes grâce à la commande /settime !"
+		if {time.xray} is not set:
+			broadcast "&a&l[&aAvertissement&a&l] &aLe temps du tempban pour Xray n'est pas set ! Merci de le faire pour régler les problèmes grâce à la commande /settime !"
+		if {jsonmsg} is not set:
+			broadcast "&a&l[&aAvertissement&a&l] &aLes messages de confirmation ne sont pas set ! Merci de le faire pour régler les problèmes grâce à la commande /configjsonapi !"
+		else:
+			send "{@prefix} &aAucune erreur n'a été détecté !"
+
+#===================================#
+
+      #---- Partie JSONAPI ----#
+
+#===================================#
+
+command /configjsonapi [<text>]:
+	permission: ADMIN
+	permission message: &cTu n'as pas le droit &c&l[&cADMIN&c&l] &c!
+	trigger:
+		if arg 1 is set:
+			if arg 1 is "true":
+				set {jsonmsg} to true
+				send "{@prefix} &aTu as activer les messages de confirmation !"
+			if arg 1 is "false":
+				set {jsonmsg} to false
+				send "{@prefix} &aTu as désactiver les messages de confirmation !"
+		else:
+			send "{@prefix} &aChoisi True pour activer les messages de confirmation ou False pour les désactiver !"
+
+
+command /§msgjsonapi [<text>] [<offline player>]:
+	permission: MODO
+	trigger:
+		if arg 1 is "banaimbot":
+			if {jsonmsg} is true:
+				json("%player%", "{@prefix} &aClique ici pour confirmer la sanction ! ||ttp: &cSanction : Aimbot Refus De Verif ! ||cmd:/ban %arg 2% Aimbot Refus De Verif")
+			else:
+				execute player command "/ban %arg 2% Aimbot Refus De Verif"
+		if arg 1 is "banantikb":
+			if {jsonmsg} is true:
+				json("%player%", "{@prefix} &aClique ici pour confirmer la sanction ! ||ttp: &cSanction : Anti-KnockBack Refus De Verif ! ||cmd:/ban %arg 2% Anti-KnockBack Refus De Verif")
+			else:
+				execute player command "/ban %arg 2% Anti-KnockBack Refus De Verif"
+		if arg 1 is "banautoclick":
+			if {jsonmsg} is true:
+				json("%player%", "{@prefix} &aClique ici pour confirmer la sanction ! ||ttp: &cSanction : AutoClick Refus De Verif ! ||cmd:/ban %arg 2% AutoClick Refus De Verif")
+			else:
+				execute player command "/ban %arg 2% AutoClick Refus De Verif"
+		if arg 1 is "banbowaimbot":
+			if {jsonmsg} is true:
+				json("%player%", "{@prefix} &aClique ici pour confirmer la sanction ! ||ttp: &cSanction : Bow-Aimbot Refus De Verif ! ||cmd:/ban %arg 2% Bow-Aimbot Refus De Verif")
+			else:
+				execute player command "/ban %arg 2% Bow-Aimbot Refus De Verif"
+		if arg 1 is "banspeedhack":
+			if {jsonmsg} is true:
+				json("%player%", "{@prefix} &aClique ici pour confirmer la sanction ! ||ttp: &cSanction : SpeedHack Refus De Verif ! ||cmd:/ban %arg 2% SpeedHack Refus De Verif")
+			else:
+				execute player command "/ban %arg 2% SpeedHack Refus De Verif"
+		if arg 1 is "banfly":
+			if {jsonmsg} is true:
+				json("%player%", "{@prefix} &aClique ici pour confirmer la sanction ! ||ttp: &cSanction : Fly Refus De Verif ! ||cmd:/ban %arg 2% Fly Refus De Verif")
+			else:
+				execute player command "/ban %arg 2% Fly Refus De Verif"
+		if arg 1 is "banforcefield":
+			if {jsonmsg} is true:
+				json("%player%", "{@prefix} &aClique ici pour confirmer la sanction ! ||ttp: &cSanction : ForceField Refus De Verif ! ||cmd:/ban %arg 2% ForceField Refus De Verif")
+			else:
+				execute player command "/ban %arg 2% ForceField Refus De Verif"
+		if arg 1 is "bankillaura":
+			if {jsonmsg} is true:
+				json("%player%", "{@prefix} &aClique ici pour confirmer la sanction ! ||ttp: &cSanction : Kill-Aura Refus De Verif ! ||cmd:/ban %arg 2% Kill-Aura Refus De Verif")
+			else:
+				execute player command "/ban %arg 2% Kill-Aura Refus De Verif"
+		if arg 1 is "bannofall":
+			if {jsonmsg} is true:
+				json("%player%", "{@prefix} &aClique ici pour confirmer la sanction ! ||ttp: &cSanction : NoFall Refus De Verif ! ||cmd:/ban %arg 2% NoFall Refus De Verif")
+			else:
+				execute player command "/ban %arg 2% NoFall Refus De Verif"
+		if arg 1 is "bannuker":
+			if {jsonmsg} is true:
+				json("%player%", "{@prefix} &aClique ici pour confirmer la sanction ! ||ttp: &cSanction : Nuker Refus De Verif ! ||cmd:/ban %arg 2% Nuker Refus De Verif")
+			else:
+				execute player command "/ban %arg 2% Nuker Refus De Verif"
+		if arg 1 is "banfastbow":
+			if {jsonmsg} is true:
+				json("%player%", "{@prefix} &aClique ici pour confirmer la sanction ! ||ttp: &cSanction : FastBow Refus De Verif ! ||cmd:/ban %arg 2% FastBow Refus De Verif")
+			else:
+				execute player command "/ban %arg 2% FastBow Refus De Verif"
+		if arg 1 is "banvanillatp":
+			if {jsonmsg} is true:
+				json("%player%", "{@prefix} &aClique ici pour confirmer la sanction ! ||ttp: &cSanction : VanillaTP Refus De Verif ! ||cmd:/ban %arg 2% VanillaTP Refus De Verif")
+			else:
+				execute player command "/ban %arg 2% VanillaTP Refus De Verif"
+		if arg 1 is "banxray":
+			if {jsonmsg} is true:
+				json("%player%", "{@prefix} &aClique ici pour confirmer la sanction ! ||ttp: &cSanction : X-Ray Refus De Verif ! ||cmd:/ban %arg 2% X-Ray Refus De Verif")
+			else:
+				execute player command "/ban %arg 2% X-Ray Refus De Verif"
+		if arg 1 is "tempbanaimbot":
+			if {jsonmsg} is true:
+				json("%player%", "{@prefix} &aClique ici pour confirmer la sanction ! ||ttp: &cSanction : Aimbot ! ||cmd:/tempban %arg 2% %{time.aimbot}% Aimbot")
+			else:
+				execute player command "/tempban %arg 2% %{time.aimbot}% Aimbot"
+		if arg 1 is "tempbanantikb":
+			if {jsonmsg} is true:
+				json("%player%", "{@prefix} &aClique ici pour confirmer la sanction ! ||ttp: &cSanction : Anti-KnockBack ! ||cmd:/tempban %arg 2% %{time.antikb}% Anti-KnockBack")
+			else:
+				execute player command "/tempban %arg 2% %{time.antikb}% Anti-KnockBack"
+		if arg 1 is "tempbanautoclick":
+			if {jsonmsg} is true:
+				json("%player%", "{@prefix} &aClique ici pour confirmer la sanction ! ||ttp: &cSanction : AutoClick ! ||cmd:/tempban %arg 2% %{time.autoclick}% AutoClick")
+			else:
+				execute player command "/tempban %arg 2% %{time.autoclick}% AutoClick"
+		if arg 1 is "tempbanbowaimbot":
+			if {jsonmsg} is true:
+				json("%player%", "{@prefix} &aClique ici pour confirmer la sanction ! ||ttp: &cSanction : Bow-Aimbot ! ||cmd:/tempban %arg 2% %{time.bowaimbot}% Bow-Aimbot")
+			else:
+				execute player command "/tempban %arg 2% %{time.bowaimbot}% Bow-Aimbot"
+		if arg 1 is "tempbanspeedhack":
+			if {jsonmsg} is true:
+				json("%player%", "{@prefix} &aClique ici pour confirmer la sanction ! ||ttp: &cSanction : SpeedHack ! ||cmd:/tempban %arg 2% %{time.speedhack}% SpeedHack")
+			else:
+				execute player command "/tempban %arg 2% %{time.speedhack}% SpeedHack"
+		if arg 1 is "tempbanfly":
+			if {jsonmsg} is true:
+				json("%player%", "{@prefix} &aClique ici pour confirmer la sanction ! ||ttp: &cSanction : Fly ! ||cmd:/tempban %arg 2% %{time.fly}% Fly")
+			else:
+				execute player command "/tempban %arg 2% %{time.fly}% Fly"
+		if arg 1 is "tempbanforcefield":
+			if {jsonmsg} is true:
+				json("%player%", "{@prefix} &aClique ici pour confirmer la sanction ! ||ttp: &cSanction : ForceField ! ||cmd:/tempban %arg 2% %{time.forcefield}% ForceField")
+			else:
+				execute player command "/tempban %arg 2% %{time.forcefield}% ForceField"
+		if arg 1 is "tempbankillaura":
+			if {jsonmsg} is true:
+				json("%player%", "{@prefix} &aClique ici pour confirmer la sanction ! ||ttp: &cSanction : Kill-Aura ! ||cmd:/tempban %arg 2% %{time.killaura}% Kill-Aura")
+			else:
+				execute player command "/tempban %arg 2% %{time.killaura}% Kill-Aura"
+		if arg 1 is "tempbannofall":
+			if {jsonmsg} is true:
+				json("%player%", "{@prefix} &aClique ici pour confirmer la sanction ! ||ttp: &cSanction : NoFall ! ||cmd:/tempban %arg 2% %{time.nofall}% NoFall")
+			else:
+				execute player command "/tempban %arg 2% %{time.nofall}% NoFall"
+		if arg 1 is "tempbannuker":
+			if {jsonmsg} is true:
+				json("%player%", "{@prefix} &aClique ici pour confirmer la sanction ! ||ttp: &cSanction : Nuker ! ||cmd:/tempban %arg 2% %{time.nuker}% Nuker")
+			else:
+				execute player command "/tempban %arg 2% %{time.nuker}% Nuker"
+		if arg 1 is "tempbanfastbow":
+			if {jsonmsg} is true:
+				json("%player%", "{@prefix} &aClique ici pour confirmer la sanction ! ||ttp: &cSanction : FastBow ! ||cmd:/tempban %arg 2% %{time.fastbow}% FastBow")
+			else:
+				execute player command "/tempban %arg 2% %{time.fastbow}% FastBow"
+		if arg 1 is "tempbanvanillatp":
+			if {jsonmsg} is true:
+				json("%player%", "{@prefix} &aClique ici pour confirmer la sanction ! ||ttp: &cSanction : VanillaTP ! ||cmd:/tempban %arg 2% %{time.vanillatp}% VanillaTP")
+			else:
+				execute player command "/tempban %arg 2% %{time.vanillatp}% VanillaTP"
+		if arg 1 is "tempbanxray":
+			if {jsonmsg} is true:
+				json("%player%", "{@prefix} &aClique ici pour confirmer la sanction ! ||ttp: &cSanction : X-Ray ! ||cmd:/tempban %arg 2% %{time.xray}% X-Ray")
+			else:
+				execute player command "/tempban %arg 2% %{time.xray}% X-Ray"
+		if arg 1 is "banipaimbot":
+			if {jsonmsg} is true:
+				json("%player%", "{@prefix} &aClique ici pour confirmer la sanction ! ||ttp: &cSanction : Aimbot Refus De Verif ! ||cmd:/banip %arg 2% Aimbot Refus De Verif")
+			else:
+				execute player command "/banip %arg 2% Aimbot Refus De Verif"
+		if arg 1 is "banipantikb":
+			if {jsonmsg} is true:
+				json("%player%", "{@prefix} &aClique ici pour confirmer la sanction ! ||ttp: &cSanction : Anti-KnockBack Refus De Verif ! ||cmd:/banip %arg 2% Anti-KnockBack Refus De Verif")
+			else:
+				execute player command "/banip %arg 2% Anti-KnockBack Refus De Verif"
+		if arg 1 is "banipautoclick":
+			if {jsonmsg} is true:
+				json("%player%", "{@prefix} &aClique ici pour confirmer la sanction ! ||ttp: &cSanction : AutoClick Refus De Verif ! ||cmd:/banip %arg 2% AutoClick Refus De Verif")
+			else:
+				execute player command "/banip %arg 2% AutoClick Refus De Verif"
+		if arg 1 is "banipbowaimbot":
+			if {jsonmsg} is true:
+				json("%player%", "{@prefix} &aClique ici pour confirmer la sanction ! ||ttp: &cSanction : Bow-Aimbot Refus De Verif ! ||cmd:/banip %arg 2% Bow-Aimbot Refus De Verif")
+			else:
+				execute player command "/banip %arg 2% Bow-Aimbot Refus De Verif"
+		if arg 1 is "banipspeedhack":
+			if {jsonmsg} is true:
+				json("%player%", "{@prefix} &aClique ici pour confirmer la sanction ! ||ttp: &cSanction : SpeedHack Refus De Verif ! ||cmd:/banip %arg 2% SpeedHack Refus De Verif")
+			else:
+				execute player command "/banip %arg 2% SpeedHack Refus De Verif"
+		if arg 1 is "banipfly":
+			if {jsonmsg} is true:
+				json("%player%", "{@prefix} &aClique ici pour confirmer la sanction ! ||ttp: &cSanction : Fly Refus De Verif ! ||cmd:/banip %arg 2% Fly Refus De Verif")
+			else:
+				execute player command "/banip %arg 2% Fly Refus De Verif"
+		if arg 1 is "banipforcefield":
+			if {jsonmsg} is true:
+				json("%player%", "{@prefix} &aClique ici pour confirmer la sanction ! ||ttp: &cSanction : ForceField Refus De Verif ! ||cmd:/banip %arg 2% ForceField Refus De Verif")
+			else:
+				execute player command "/banip %arg 2% ForceField Refus De Verif"
+		if arg 1 is "banipkillaura":
+			if {jsonmsg} is true:
+				json("%player%", "{@prefix} &aClique ici pour confirmer la sanction ! ||ttp: &cSanction : Kill-Aura Refus De Verif ! ||cmd:/banip %arg 2% Kill-Aura Refus De Verif")
+			else:
+				execute player command "/banip %arg 2% Kill-Aura Refus De Verif"
+		if arg 1 is "banipnofall":
+			if {jsonmsg} is true:
+				json("%player%", "{@prefix} &aClique ici pour confirmer la sanction ! ||ttp: &cSanction : NoFall Refus De Verif ! ||cmd:/banip %arg 2% NoFall Refus De Verif")
+			else:
+				execute player command "/banip %arg 2% NoFall Refus De Verif"
+		if arg 1 is "banipnuker":
+			if {jsonmsg} is true:
+				json("%player%", "{@prefix} &aClique ici pour confirmer la sanction ! ||ttp: &cSanction : Nuker Refus De Verif ! ||cmd:/banip %arg 2% Nuker Refus De Verif")
+			else:
+				execute player command "/banip %arg 2% Nuker Refus De Verif"
+		if arg 1 is "banipfastbow":
+			if {jsonmsg} is true:
+				json("%player%", "{@prefix} &aClique ici pour confirmer la sanction ! ||ttp: &cSanction : FastBow Refus De Verif ! ||cmd:/banip %arg 2% FastBow Refus De Verif")
+			else:
+				execute player command "/banip %arg 2% FastBow Refus De Verif"
+		if arg 1 is "banipvanillatp":
+			if {jsonmsg} is true:
+				json("%player%", "{@prefix} &aClique ici pour confirmer la sanction ! ||ttp: &cSanction : VanillaTP Refus De Verif ! ||cmd:/banip %arg 2% VanillaTP Refus De Verif")
+			else:
+				execute player command "/banip %arg 2% VanillaTP Refus De Verif"
+		if arg 1 is "banipxray":
+			if {jsonmsg} is true:
+				json("%player%", "{@prefix} &aClique ici pour confirmer la sanction ! ||ttp: &cSanction : X-Ray Refus De Verif ! ||cmd:/banip %arg 2% X-Ray Refus De Verif")
+			else:
+				execute player command "/banip %arg 2% X-Ray Refus De Verif"
+
+#===================================#
+
+      #---- Partie /Report ----#
+
+#===================================#
+
+command /§report [<player>] [<text>]:
+	trigger:
+		if arg 1 is set:
+			if arg 2 is set:
+				set {_Diff} to difference between {report.last.%player%} and now
+				if {_Diff} is less than 5 minutes:
+					send "{@prefixreport} &cDésolé, mais vous pouvez signaler un joueur que toutes les 5 minutes ! &4Cela fait %{_Diff}% que vous avez report le dernier joueur"
+				else:
+					if arg 1 is online:
+						if arg 1 has the permission "{@bypassperm}":
+							send "{@prefixreport} &7Vous ne pouvez pas report ce joueur !" to player
+							send "{@prefixreport} &7%player% a essayer de vous report !" to arg 1
+							stop
+						else:
+							set {report.last.%player%} to now
+							loop all players:
+								if loop-player has permission "{@permalert}":
+									send "{@prefixreport} &f%player% &a a signalé &f%arg 1% &apour &f%arg 2%" to loop-player
+									add "{@prefixreport} &f%player% &a a signalé &f%arg 1% &apour &f%arg 2%" to {reportlist::*}
+									if {msgadm.report} is true:
+										broadcast "{@msgadmreport}"
+							send "{@prefixreport} &aVous avez report &f%arg 1% &apour &f%arg 2% &a!"
+					else:
+						send "{@prefixreport} &f%arg 1% &a n'est pas connecté"
+
+#===================================#
+
+      #---- Partie Commandes ----#
+
+#===================================#
+
+#===================================#
+
+      #---- Partie Ban ----#
+
+#===================================#
+
+command /ban [<offline player>] [<text>]:
+	trigger:
+		if player has the permission "MODO":
+			if arg 1 is not set:
+				send "{@prefixban} &7Séléctionne un Joueur !" to player
+				stop
+			else:
+				if arg 2 is set:
+					if arg 1 has the permission "{@bypassperm}":
+						send "{@prefixban} &7Vous ne pouvez pas bannir ce joueur !" to player
+						send "{@prefixban} &7%player% a essayer de vous bannir !" to arg 1
+						stop
+					else:
+						if {ban.%arg 1%} is false:
+							set {ban.bannisseur.%arg 1%} to "%player%"
+							set {ban.%arg 1%} to true
+							set {ban.raison.%arg 1%} to arg 2
+							set {ban.date.%arg 1%} to now
+							set {bantotal.%arg 1%} to true
+							set {ban.counter.%arg 1%} to 0
+							if {msgadm.ban} is true:
+								broadcast "{@msgadmban}"
+							kick arg 1 due to "{@bandefmsg1}"
+							add "&b%arg 1% &e➜ &b%arg 2% &epar &b%player% &ele &b%{ban.date.%arg 1%}%" to {banlist::*}
+							send "{@prefixban} &7Tu as banni le joueur %arg 1% pour %arg 2% !"
+							if {nombre.ban.%arg 1%} is not set:
+								set {nombre.ban.%arg 1%} to 0
+								add 1 to {nombre.ban.%arg 1%}
+							else:
+								add 1 to {nombre.ban.%arg 1%}
+						else:
+							send "{@prefixban} &7Le joueur %arg 1% est déjà banni"
+				else:
+					send "{@prefixban} &7Pour quelle Raison veux-tu bannir le joueur &e%arg 1% &7?" to player
+					stop
+		else:
+			send "&cTu n'as pas le droit de ban &4[&cMODO&4]&c !"
+
+#===================================#
+
+      #---- Partie BanIP ----#
+
+#===================================#
+
+command /banip [<offlineplayer>] [<text>]:
+	trigger:
+		if player has the permission "MODO":
+			if arg 1 is not set:
+				send "{@prefixban} &7Séléctionne un Joueur !" to player
+			else:
+				if arg 2 is not set:
+					send "{@prefixban} &7Pour quelle Raison veux-tu bannir le joueur &e%arg 1% &7?" to player
+				else:
+					if arg 1 has the permission "{@bypassperm}":
+						send "{@prefixban} &7Vous ne pouvez pas bannir ce joueur !" to player
+						send "{@prefixban} &7%player% a essayer de vous bannir !" to arg 1
+						stop
+					else:
+						set {banip.date.%arg 1%} to now
+						set {banip.%arg 1%} to true
+						set {banip.ip.%arg 1%} to IP of arg 1
+						set {banip.raison.%arg 1%} to arg 2
+						set {banip.bannisseur.%arg 1%} to "%player%"
+						set {bantotal.%arg 1%} to true
+						broadcast "&e%arg 1% &7a été banni-ip pour &c%arg 2%"
+						kick arg 1 due to "{@msgbanip1}"
+						add "&b%arg 1% &e➜ &b%arg 2% &epar &b%player% &ele &b%{banip.date.%arg 1%}%" to {baniplist::*}
+		else:
+			send "&cTu n'as pas le droit de banip &4[&cMODO&4]&c !"
+
+
+#===================================#
+
+      #---- Partie TempBan ----#
+
+#===================================#
+
+
+command /tempban [<offlineplayer>] [<text>] [<text>]:
+	trigger:
+		if player has the permission "MODO":
+			if arg 1 is not set:
+				send "{@prefixban} &cVous devez préciser un joueur."
+			else:
+				if arg 2 is not set:
+					send "{@prefixban} &cVous devez préciser une durée."
+				else:
+					if arg 3 is not set:
+						send "{@prefixban} &cVous devez préciser une raison."
+					else:
+						if {tempban.%arg 1%} is true:
+							send "{@prefixban} &cLe joueur %arg 1% est déjà ban pendant %{tempban.temps.%arg 1%}%."
+						else:
+							if {ban.%arg 1%} is true:
+								send "&cErreur: Le joueur %arg 1% est déjà ban défénitivement."
+							else:
+								if {banip.%arg 1%} is true:
+									send "&cErreur: Le joueur %arg 1% est déjà ban-ip défénitivement."
+								else:
+									if arg 1 has the permission "{@bypassperm}":
+										send "{@prefixban} &7Vous ne pouvez pas bannir ce joueur !" to player
+										send "{@prefixban} &7%player% a essayer de vous bannir !" to arg 1
+										stop
+									else:
+										set {tempban.%arg 1%} to true
+										set {tempban.temps.%arg 1%} to arg 2
+										set {tempban.temps.fr.%arg 1%} to {tempban.temps.%arg 1%}
+										replace "s" with " seconde" in {tempban.temps.fr.%arg 1%}
+										replace "h" with " heure" in {tempban.temps.fr.%arg 1%}
+										replace "d" with " jour" in {tempban.temps.fr.%arg 1%}
+										replace "m" with " minute" in {tempban.temps.fr.%arg 1%}
+										set {ban.counter.%arg 1%} to 0
+										set {tempban.bannisseur.%arg 1%} to player
+										set {tempban.date.%arg 1%} to now
+										set {tempban.raison.%arg 1%} to arg 3
+										set {bantotal.%arg 1%} to true
+										send "{@prefixban} &aVous avez banni %arg 1% pendant %{tempban.temps.fr.%arg 1%}% pour %arg 3%"
+										add "&b%arg 1% &e➜ &b%arg 3% &epar &b%player% &ependant &b%{tempban.temps.fr.%arg 1%}% &ele &b%{tempban.date.%arg 1%}%" to {tempbanlist::*}
+										if {msgadm.tempban} is true:
+											broadcast "{@msgadmtempban} "
+											if arg 1 is online:
+												kick arg 1 due to "{@msgtempban1}"
+											if {nombre.tempban.%arg 1%} is not set:
+												set {nombre.tempban.%arg 1%} to 0
+												add 1 to {nombre.tempban.%arg 1%}
+											else:
+												add 1 to {nombre.tempban.%arg 1%}
+											wait {tempban.temps.%arg 1%}
+											remove "&b%arg 1% &e➜ &b%arg 3% &epar &b%player% &ependant &b%{tempban.temps.%arg 1%}% &ele &b%{tempban.date.%arg 1%}%" from {banlist::*}
+		else:
+			send "&cTu n'as pas le droit de tempban &4[&cMODO&4]&c !"
+
+#===================================#
+
+      #---- Partie UnBan ----#
+
+#===================================#
+
+command /unban [<offline player>]:
+	trigger:
+		if player has the permission "MODO":
+			if arg 1 is set:
+				if {bantotal.%arg 1%} is true:
+					if {ban.%arg 1%} is true:
+						remove "&b%arg 1% &e➜ &b%{ban.raison.%arg 1%}% &epar &b%{ban.bannisseur.%arg 1%}% &ele &b%{ban.date.%arg 1%}%" from {banlist::*}
+					if {tempban.%arg 1%} is true:
+						remove "&b%arg 1% &e➜ &b%{tempban.raison.%arg 1%}% &epar &b%{tempban.bannisseur.%arg 1%}% &ependant &b%{tempban.temps.fr.%arg 1%}% &ele &b%{tempban.date.%arg 1%}%" from {tempbanlist::*}
+					if {banip.%arg 1%} is true:
+						remove "&b%arg 1% &e➜ &b%{banip.raison.%arg 1%}% &epar &b%{banip.bannisseur}% &ele &b%{banip.date.%arg 1%}%" from {baniplist::*}
+					set {ban.%arg 1%} to false
+					clear {ban.raison.%arg 1%}
+					clear {ban.bannisseur.%arg 1%}
+					clear {ban.date.%arg 1%}
+					clear {tempban.date.%arg 1%}
+					clear {tempban.temp.%arg 1%}
+					clear {tempban.temps.%arg 1%}
+					clear {tempban.baninisseur.%arg 1%}
+					clear {tempban.raison.%arg 1%}
+					clear {banip.raison.%arg 1%}
+					clear {banip.bannisseur.%arg 1%}
+					clear {banip.date.%arg 1%}
+					set {ban.counter.%arg 1%} to 0
+					set {bantotal.%arg 1%} to false
+					set {tempban.%arg 1%} to false
+					set {banip.%arg 1%} to false
+					send "{@prefixban} &aVous avez débanni le joueur %arg 1% !"
+					if {msgadm.unban} is true:
+						broadcast "{@msgadmunban}"
+				else:
+					send "{@prefixban} &a%arg 1% &fn'est pas banni"
+			if arg 1 is not set:
+				send "{@prefixban} &fQuelle personne veux-tu unban"
+		else:
+			send "&cTu n'as pas le droit de unban &4[&cMODO&4]&c !"
+
+#===================================#
+
+      #---- Partie Kick ----#
+
+#===================================#
+
+command /kick [<player>] [<text>]:
+	trigger:
+		if player has the permission "MODO":
+			if arg 1 is not set:
+				send "{@prefixkick} &7Séléctionne un Joueur !" to player
+			else:
+				if arg 2 is not set:
+					send "{@prefixkick} &7Pour quelle Raison veux-tu Kick le joueur &e%arg 1% &7?" to player
+				else:
+					if arg 1 has the permission "{@bypassperm}":
+						send "{@prefixkick} &7Vous ne pouvez pas kick ce joueur !" to player
+						send "{@prefixkick} &7%player% a essayer de vous kick !" to arg 1
+						stop
+					else:
+						broadcast "&e%arg 1% &7a été kick pour &c%arg 2%"
+						kick arg 1 due to "{@msgkick}"
+						if {msgadm.kick} is true:
+							broadcast "{@msgadmkick}"
+						if {nombre.kick.%arg 1%} is not set:
+							set {nombre.kick.%arg 1%} to 0
+							add 1 to {nombre.kick.%arg 1%}
+						else:
+							add 1 to {nombre.kick.%arg 1%}
+		else:
+			send "&cTu n'as pas le droit de kick &4[&cMODO&4]&c !"
+
+#===================================#
+
+      #---- Partie KickAll ----#
+
+#===================================#
+
+command /kickall [<text>]:
+	trigger:
+		if player has the permission "MODO":
+			if arg 1 is not set:
+				send "{@prefixkick} &7Pourquoi veux-tu Kick tous les joueurs !" to player
+			else:
+				loop all players:
+					if loop-player doesn't have the permission "ADMIN" or "MODO":
+						broadcast "&eTous les joueurs ont été kick ! Raison : %arg 1%"
+						kick loop-player due to "&7Vous avez été Kick du Serveur%nl%&6Raison : &a%arg 1%"
+		else:
+			send "&cTu n'as pas le droit de kick &4[&cMODO&4]&c !"
+
+#===================================#
+
+      #---- Partie Mute ----#
+
+#===================================#
+
+command /mute [<offline player>] [<text>] [<text>]:
+	trigger:
+		if player has the permission "MODO":
+			if arg 1 is set:
+				if arg 2 is set:
+					if arg 3 is set:
+						if arg 1 has the permission "{@bypassperm}":
+							send "{@prefixmute} &7Vous ne pouvez pas mute ce joueur !" to player
+							send "{@prefixmute} &7%player% a essayer de vous mute !" to arg 1
+							stop
+						else:
+							set {mute.%arg 1%} to true
+							set {mute.date.%arg 1%} to now
+							set {mute.temps.%arg 1%} to arg 2
+							set {mute.temps.fr.%arg 1%} to {mute.temps.%arg 1%}
+							replace "s" with " seconde" in {mute.temps.fr.%arg 1%}
+							replace "h" with " heure" in {mute.temps.fr.%arg 1%}
+							replace "d" with " jour" in {mute.temps.fr.%arg 1%}
+							replace "m" with " minute" in {mute.temps.fr.%arg 1%}
+							set {mute.raison.%arg 1%} to arg 3
+							set {mute.muteur.%arg 1%} to player
+							send "{@prefixmute} &a%arg 1% a été mute !"
+							add "&b%arg 1% &e➜ &b%{mute.temps.fr.%arg 1%}% &epour &b%arg 3% &epar &b%player%" to {mutelist::*}
+							if {nombre.mute.%arg 1%} is not set:
+								set {nombre.mute.%arg 1%} to 0
+								add 1 to {nombre.mute.%arg 1%}
+							else:
+								add 1 to {nombre.mute.%arg 1%}
+							if {msgadm.mute} is true:
+								broadcast "{@msgadmmute}"
+							wait {mute.temps.%arg 1%}
+							remove "&b%arg 1% &e➜ &b%{mute.temps.fr.%arg 1%}% &epour &b%arg 3% &epar &b%player%" from {mutelist::*}
+					else:
+						send "{@prefixmute} &aPour quelle raison veux-tu le mute ?"
+				else:
+					send "{@prefixmute} &aPendant combien de temp ?"
+			else:
+				send "{@prefixmute} &aQuelle joueur veux-tu mute ?"
+		else:
+			send "&cTu n'as pas le droit de Mute &4[&cMODO&4]&c !"
+
+#===================================#
+
+      #---- Partie UnMute ----#
+
+#===================================#
+
+command /unmute [<offline player>]:
+	trigger:
+		if player has the permission "MODO":
+			if arg 1 is set:
+				if {mute.%arg 1%} is true:
+					remove "&b%arg 1% &e➜ &b%{mute.temps.fr.%arg 1%}% &epour &b%{mute.raison.%arg 1%}% &epar &b%{mute.muteur.%arg 1%}%" from {mutelist::*}
+					set {mute.%arg 1%} to false
+					clear {mute.date.%arg 1%}
+					clear {mute.temp.%arg 1%}
+					clear {mute.temps.%arg 1%}
+					clear {mute.raison.%arg 1%}
+					clear {mute.muteur.%arg 1%}
+					send "{@prefixmute} &a%arg 1% &fa été unmute !" to player
+					if {msgadm.unmute} is true:
+						broadcast "{@msgadmunmute}"
+				else:
+					send "{@prefixmute} &a%arg 1% &fn'est pas mute !" to player
+			else:
+				send "{@prefixmute} &aQui veux-tu unmute ?" to player
+		else:
+			send "&cTu n'as pas le droit de UnMute &4[&cMODO&4]&c !"
+
+
+#===================================#
+
+      #---- Partie Freeze ----#
+
+#===================================#
+
+
+command /freeze [<offline player>] [<text>]:
+	trigger:
+		if player has the permission "MODO":
+			if arg 1 is set:
+				if arg 1 is online:
+					if arg 2 is set:
+						if arg 1 has the permission "{@bypassperm}":
+							send "{@prefixfreeze} &7Vous ne pouvez pas freeze ce joueur !" to player
+							send "{@prefixfreeze} &7%player% a essayer de vous freeze !" to arg 1
+							stop
+						else:
+							if {freeze.%arg 1%} is false:
+								set {freeze.%arg 1%} to true
+								apply jump boost 250 to arg 1 for 999 days
+								apply slowness 250 to arg 1 for 999 days
+								apply blindness 250 to arg 1 for 999 days
+								send "{@prefixfreeze} &bTu as &b&lFreeze &ble joueur &b%arg 1% !" to player
+								send "{@prefixfreeze} &bTu as été &b&lFreeze &bpar &b%player% &bpour: &b%arg 2% &b!" to arg 1
+								send "{@prefixfreeze} &bEn cas de déconnexion, tu seras sanctionné d'un &b&lban &b!" to arg 1
+								set {freeze.freezer.%arg 1%} to player
+								if {nombre.freeze.%arg 1%} is not set:
+									set {nombre.freeze.%arg 1%} to 0
+									add 1 to {nombre.freeze.%arg 1%}
+								else:
+									add 1 to {nombre.freeze.%arg 1%}
+								if {msgadm.freeze} is true:
+									broadcast "{@msgadmfreeze}"
+								if arg 1 is online:
+									loop 10 times:
+										set action bar of arg 1 to "&bVous avez été Freeze par &b&l%player% &bpour &b&l%arg 2% !"
+										wait 1 second
+					else:
+						send "{@prefixfreeze} &bPour quelle raison veux-tu freeze &b&l%arg 1% ?"
+				else:
+					send "{@prefixfreeze} &bLe joueur %arg 1% n'est pas connecté !"
+			else:
+				send "{@prefixfreeze} &bQuelle joueur veux-tu freeze ?"
+		else:
+			send "&cTu n'as pas le droit de freeze &4[&cMODO&4]&c !"
+
+#===================================#
+
+      #---- Partie UnFreeze ----#
+
+#===================================#
+
+command /unfreeze [<player>]:
+	trigger:
+		if player has the permission "MODO":
+			if arg 1 is set:
+				if {freeze.%arg 1%} is true:
+					set {freeze.%arg 1%} to false
+					apply jump boost 250 to arg 1 for 1 second
+					apply slowness 250 to arg 1 for 1 second
+					apply blindness 250 to arg 1 for 1 second
+					send "{@prefixfreeze} &bTu as unfreeze le joueur &b&l%arg 1%" to player
+					send "{@prefixfreeze} &bTu as été unfreeze"
+					clear {freeze.freezer.%arg 1%}
+					if {msgadm.unfreeze} is true:
+						broadcast "{@msgadmunfreeze}"
+					loop 30 times:
+						set action bar of arg 1 to "&bVous avez été unfreeze "
+						wait 1 second
+				else:
+					send "{@prefixfreeze} &aLe joueur %arg 1% n'est pas freeze !"
+			else:
+				send "{@prefixfreeze} &aQuelle joueur veux-tu unfreeze !"
+		else:
+			send "&cTu n'as pas le droit de unfreeze &4[&cMODO&4]&c !"
+
+#===================================#
+
+  #---- Partie Avertissements ----#
+
+#===================================#
+
+command /avertissement [<offline player>] [<text>]:
+	trigger:
+		if player has the permission "MODO":
+			if arg 1 is set:
+				if arg 1 has the permission "{@bypassperm}":
+					send "{@prefixavert} &7Vous ne pouvez pas mettre un avertissement a ce joueur !" to player
+					send "{@prefixavert} &7%player% a essayer de vous mettre un avertissement !" to arg 1
+					stop
+				else:
+					if arg 2 is set:
+						if arg 2 is "Aimbot" or "Anti-KnockBack" or "AutoClick" or "Bow-Aimbot" or "SpeedHack " or "Fly" or "ForceField" or "Kill-Aura" or "NoFall" or "Nuker" or "FastBow" or "VanillaTP" or "X-Ray":
+							if {avertissement.%arg 2%.%arg 1%} is equal to 0:
+								set {avertissement.%arg 2%.%arg 1%} to 1
+								send "{@prefixavert} &7Tu as mis un avertissement au joueur &e%arg 1%" to player
+								send "{@prefixavert} &71er Avertissement !" to player
+								send "{@prefixavert} &7Tu as reçu un avertissement pour &e%arg 1%" to arg 1
+								if {nombre.avert.%arg 1%} is not set:
+									set {nombre.avert.%arg 1%} to 1
+								else:
+									add 1 to {nombre.avert.%arg 1%}
+								if {nombre.avert.ban.%arg 1%} is not set:
+									set {nombre.avert.ban.%arg 1%} to 1
+								else:
+									add 1 to {nombre.avert.ban.%arg 1%}
+								if {msgadm.avert} is true:
+									broadcast "{@msgadmavert}"
+								stop
+							if {avertissement.%arg 2%.%arg 1%} is equal to 1:
+								set {avertissement.%arg 2%.%arg 1%} to 2
+								send "{@prefixavert} &7Tu as mis un avertissement au joueur &e%arg 1%" to player
+								send "{@prefixavert} &72ème Avertissements !" to player
+								send "{@prefixavert} &7Tu as reçu un avertissement pour &e%arg 1%" to arg 1
+								add 1 to {nombre.avert.%arg 1%}
+								add 1 to {nombre.avert.ban.%arg 1%}
+								if {msgadm.avert} is true:
+									broadcast "{@msgadmavert}"
+								stop
+							if {avertissement.%arg 2%.%arg 1%} is equal to 2:
+								set {avertissement.%arg 2%.%arg 1%} to 3
+								send "{@prefixavert} &7Tu as mis un avertissement au joueur &e%arg 1%" to player
+								send "{@prefixavert} &73ème Avertissements !" to player
+								send " " to player
+								send "{@prefixavert} &7Dernier Avertissement avant le &cBannissement " to player
+								send "{@prefixavert} &7Tu as reçu un avertissement pour &e%arg 1%" to arg 1
+								add 1 to {nombre.avert.%arg 1%}
+								add 1 to {nombre.avert.ban.%arg 1%}
+								if {msgadm.avert} is true:
+									broadcast "{@msgadmavert}"
+								stop
+							if {avertissement.%arg 2%.%arg 1%} is equal to 3:
+								set {avertissement.%arg 2%.%arg 1%} to 0
+								send "{@prefixavert} &7Tu as mis un avertissement au joueur &e%arg 1%" to player
+								send "{@prefixavert} &7Ce joueur à reçu 3 avertissements" to player
+								add 1 to {nombre.avert.%arg 1%}
+								add 1 to {nombre.avert.ban.%arg 1%}
+								send " " to player
+								send "{@prefixavert} &c&lBan du joueur &c%arg 1%" to player
+								execute console command "/tempban %arg 1% 2d 3 Avertissements TempBan ➜ %arg 2% !"
+								if {msgadm.avert} is true:
+									broadcast "{@msgadmavert}"
+								stop
+							else:
+								send "{@prefixavert} &7Le joueur %arg 1% ne s'est jamais connecté !"
+						else if arg 2 is "Spam" or "Insulte" or "Pub" or "Menace":
+							if {avertissement.%arg 2%.%arg 1%} is equal to 0:
+								set {avertissement.%arg 2%.%arg 1%} to 1
+								send "{@prefixavert} &7Tu as mis un avertissement au joueur &e%arg 1%" to player
+								send "{@prefixavert} &71er Avertissement !" to player
+								send "{@prefixavert} &7Tu as reçu un avertissement pour &e%arg 1%" to arg 1
+								if {nombre.avert.%arg 1%} is not set:
+									set {nombre.avert.%arg 1%} to 1
+								else:
+									add 1 to {nombre.avert.%arg 1%}
+								if {nombre.avert.mute.%arg 1%} is not set:
+									set {nombre.avert.mute.%arg 1%} to 1
+								else:
+									add 1 to {nombre.avert.mute.%arg 1%}
+								if {msgadm.avert} is true:
+									broadcast "{@msgadmavert}"
+								stop
+							if {avertissement.%arg 2%.%arg 1%} is equal to 1:
+								set {avertissement.%arg 2%.%arg 1%} to 2
+								send "{@prefixavert} &7Tu as mis un avertissement au joueur &e%arg 1%" to player
+								send "{@prefixavert} &72ème Avertissements !" to player
+								send "{@prefixavert} &7Tu as reçu un avertissement pour &e%arg 1%" to arg 1
+								add 1 to {nombre.avert.%arg 1%}
+								add 1 to {nombre.avert.mute.%arg 1%}
+								if {msgadm.avert} is true:
+									broadcast "{@msgadmavert}"
+								stop
+							if {avertissement.%arg 2%.%arg 1%} is equal to 2:
+								set {avertissement.%arg 2%.%arg 1%} to 3
+								send "{@prefixavert} &7Tu as mis un avertissement au joueur &e%arg 1%" to player
+								send "{@prefixavert} &73ème Avertissements !" to player
+								send "{@prefixavert} &7Tu as reçu un avertissement pour &e%arg 1%" to arg 1
+								add 1 to {nombre.avert.%arg 1%}
+								add 1 to {nombre.avert.mute.%arg 1%}
+								if {msgadm.avert} is true:
+									broadcast "{@msgadmavert}"
+								send " " to player
+								send "{@prefixavert} &7Dernier Avertissement avant le &cMute" to player
+								stop
+							if {avertissement.%arg 2%.%arg 1%} is equal to 3:
+								set {avertissement.%arg 2%.%arg 1%} to 0
+								send "{@prefixavert} &7Tu as mis un avertissement au joueur &e%arg 1%" to player
+								send "{@prefixavert} &7Ce joueur à reçu 3 avertissements" to player
+								send " " to player
+								send "{@prefixavert} &c&lMute du joueur &c%arg 1%" to player
+								send "{@prefixavert} &aTu as reçu un avertissement pour %arg 1%" to arg 1
+								execute console command "/mute %arg 1% 1d 3 Avertissements Mute ➜ %arg 2%!"
+								add 1 to {nombre.avert.%arg 1%}
+								add 1 to {nombre.avert.mute.%arg 1%}
+								if {msgadm.avert} is true:
+									broadcast "{@msgadmavert} "
+								stop
+							else:
+								send "{@prefixavert} &7Le joueur %arg 1% ne s'est jamais connecté !"
+						else:
+							send "{@prefixavert} &c&lChoisi le mode de Sanction: Aimbot / Anti-KnockBack / AutoClick / Bow-Aimbot / SpeedHack / Fly / ForceField / Kill-Aura / NoFall / Nuker / FastBow / VanillaTP / X-Ray" to player
+							send " " to player
+							send "{@prefixavert} &c&lChoisi le mode de Sanction: Spam / Insulte / Pub / Menace" to player
+					else:
+						send "{@prefixavert} &c&lChoisi le mode de Sanction: Aimbot / Anti-KnockBack / AutoClick / Bow-Aimbot / SpeedHack / Fly / ForceField / Kill-Aura / NoFall / Nuker / FastBow / VanillaTP / X-Ray" to player
+						send " " to player
+						send "{@prefixavert} &c&lChoisi le mode de Sanction: Spam / Insulte / Pub / Menace" to player
+			else:
+				send "{@prefixavert} &7Tu dois séléctionner un Joueur !" to player
+		else:
+			send "&cTu n'as pas le droit de mettre des Avertissements &c&l[&cMODO&c&l]&c !"
+
+#===================================#
+
+      #---- Partie Liste ----#
+
+#===================================#
+
+command /liste [<text>] [<text>]:
+	trigger:
+		if player has the permission "MODO":
+			if arg 1 is "ban":
+				if arg 2 is set:
+					if arg 2 is "clear" or "reset":
+						if player has the permission "ADMIN":
+							clear {banlist::*}
+							send "{@prefix} &cTu as clear la liste des ban"
+						else:
+							send "&cTu n'as pas le droit de reset la liste &c&l[&cADMIN&c&l]&c !"
+					else:
+						send "{@prefix} &cClear ou Reset comme tu veux "
+				else:
+					if {banlist::*} is set:
+						send " &b/ / / / / / / / &bLa Liste Des Ban ! \ \ \ \ \ \ \ \"
+						send "%{banlist::*}%" to player
+					else:
+						send "{@prefix} &bLa liste est vide"
+			if arg 1 is "tempban":
+				if arg 2 is set:
+					if arg 2 is "clear" or "reset":
+						if player has the permission "ADMIN":
+							clear {tempbanlist::*}
+							send "{@prefix} &cTu as clear la liste des tempban"
+						else:
+							send "&cTu n'as pas le droit de reset la liste &4[&cADMIN&4]&c !"
+					else:
+						send "{@prefix} &cClear ou Reset comme tu veux "
+				else:
+					if {tempbanlist::*} is set:
+						send " &b/ / / / / / / / &bLa Liste Des TempBan ! \ \ \ \ \ \ \ \"
+						send "%{tempbanlist::*}%" to player
+					else:
+						send "{@prefix} &bLa liste est vide"
+			if arg 1 is "banip":
+				if arg 2 is set:
+					if arg 2 is "clear" or "reset":
+						if player has the permission "ADMIN":
+							clear {baniplist::*}
+							send "{@prefix} &cTu as clear la liste des banip"
+						else:
+							send "&cTu n'as pas le droit de reset la liste &4[&cADMIN&4]&c !"
+					else:
+						send "{@prefix} &cClear ou Reset comme tu veux "
+				else:
+					if {baniplist::*} is set:
+						send " &b/ / / / / / / / &bLa Liste Des BanIp ! \ \ \ \ \ \ \ \"
+						send "%{baniplist::*}%" to player
+					else:
+						send "{@prefix} &bLa liste est vide"
+			if arg 1 is "mute":
+				if arg 2 is set:
+					if arg 2 is "clear" or "reset":
+						if player has the permission "ADMIN":
+							clear {mutelist::*}
+							send "{@prefix} &cTu as clear la liste des mutes"
+						else:
+							send "&cTu n'as pas le droit de reset la liste &4[&cADMIN&4]&c !"
+					else:
+						send "{@prefix} &cClear ou Reset comme tu veux "
+				else:
+					if {mutelist::*} is set:
+						send "&b / / / / / / / / &bLa Liste Des Mute ! \ \ \ \ \ \ \ \"
+						send "%{mutelist::*}%" to player
+					else:
+						send "{@prefix} &bLa liste est vide"
+			if arg 1 is "report":
+				if arg 2 is set:
+					if arg 2 is "clear" or "reset":
+						if player has the permission "ADMIN":
+							clear {reportlist::*}
+							send "{@prefix} &cTu as clear la liste des reports"
+						else:
+							send "&cTu n'as pas le droit de reset la liste &4[&cADMIN&4]&c !"
+					else:
+						send "{@prefix} &cClear ou Reset comme tu veux "
+				else:
+					if {reportlist::*} is set:
+						send " &b/ / / / / / / / &bLa Liste Des Reports ! \ \ \ \ \ \ \ \"
+						send "%{reportlist::*}%" to player
+					if {reportlist::*} is not set:
+						send "{@prefix} &bLa liste est vide"
+			if arg 1 is "ip":
+				if arg 2 is set:
+					if arg 2 is "clear" or "reset":
+						if player has the permission "ADMIN":
+							clear {iplist::*}
+							send "{@prefix} &cTu as clear la liste des ip"
+						else:
+							send "&cTu n'as pas le droit de reset la liste &4[&cADMIN&4]&c !"
+					else:
+						send "{@prefix} &cClear ou Reset comme tu veux "
+				else:
+					if {iplist::*} is set:
+						send " &b/ / / / / / / / &bLa Liste Des IP ! \ \ \ \ \ \ \ \"
+						send "%{iplist::*}%" to player
+					if {iplist::*} is not set:
+						send "{@prefix} &bLa liste est vide"
+			if arg 1 is "vanish":
+				if arg 2 is set:
+					if arg 2 is "clear" or "reset":
+						if player has the permission "ADMIN":
+							clear {vanishlist::*}
+							send "{@prefix} &cTu as clear la liste des vanish"
+						else:
+							send "&cTu n'as pas le droit de reset la liste &c&l[&cADMIN&c&l]&c !"
+					else:
+						send "{@prefix} &cClear ou Reset comme tu veux "
+				else:
+					if {vanishlist::*} is set:
+						send " &b/ / / / / / / / &bLa Liste Des Vanish ! \ \ \ \ \ \ \ \"
+						send "%{vanishlist::*}%" to player
+					else:
+						send "{@prefix} &bLa liste est vide"
+			if arg 1 is "mod":
+				if arg 2 is set:
+					if arg 2 is "clear" or "reset":
+						if player has the permission "ADMIN":
+							clear {modlist::*}
+							send "{@prefix} &cTu as clear la liste des mod"
+						else:
+							send "&cTu n'as pas le droit de reset la liste &c&l[&cADMIN&c&l]&c !"
+					else:
+						send "{@prefix} &cClear ou Reset comme tu veux "
+				else:
+					if {modlist::*} is set:
+						send " &b/ / / / / / / / &bLa Liste Des Mod ! \ \ \ \ \ \ \ \"
+						send "%{modlist::*}%" to player
+					else:
+						send "{@prefix} &bLa liste est vide"
+			if arg 1 is "fly":
+				if arg 2 is set:
+					if arg 2 is "clear" or "reset":
+						if player has the permission "ADMIN":
+							clear {flylist::*}
+							send "{@prefix} &cTu as clear la liste des fly"
+						else:
+							send "&cTu n'as pas le droit de reset la liste &c&l[&cADMIN&c&l]&c !"
+					else:
+						send "{@prefix} &cClear ou Reset comme tu veux "
+				else:
+					if {flylist::*} is set:
+						send " &b/ / / / / / / / &bLa Liste Des Fly ! \ \ \ \ \ \ \ \"
+						send "%{flylist::*}%" to player
+					else:
+						send "{@prefix} &bLa liste est vide"
+			if arg 1 is "god":
+				if arg 2 is set:
+					if arg 2 is "clear" or "reset":
+						if player has the permission "ADMIN":
+							clear {godlist::*}
+							send "{@prefix} &cTu as clear la liste des god"
+						else:
+							send "&cTu n'as pas le droit de reset la liste &c&l[&cADMIN&c&l]&c !"
+					else:
+						send "{@prefix} &cClear ou Reset comme tu veux "
+				else:
+					if {godlist::*} is set:
+						send " &b/ / / / / / / / &bLa Liste Des god ! \ \ \ \ \ \ \ \"
+						send "%{godlist::*}%" to player
+					else:
+						send "{@prefix} &bLa liste est vide"
+			if arg 1 is not "ip" or "report" or "tempban" or "ban" or "mute" or "banip" or "vanish" or "mod" or "fly" or "god":
+				send "{@prefix} &aQuelle liste veux-tu voir BAN / TEMPBAN / REPORT / IP / BANIP / MUTE / VANISH / MOD / FLY / GOD"
+		else:
+			send "&cTu n'as pas le droit de voir la liste &4[&cMODO&4]&c !"
+
+
+
+#===================================#
+
+      #---- Partie MSGADM ----#
+
+#===================================#
+
+command /msgadm [<text>] [<text>]:
+	trigger:
+		if player has the permission "ADMIN":
+			if arg 1 is "mute" or "unmute" or "ban" or "tempban" or "unban" or "kick" or "freeze" or "unfreeze" or "banip" or "avert" or "report":
+				if arg 2 is set:
+					if arg 2 is "true":
+						set {msgadm.%arg 1%} to true
+						send "{@prefix} &aVous avez mis les messages de &a&l%arg 1% &aà &a&l%arg 2%"
+					if arg 2 is "false":
+						set {msgadm.%arg 1%} to false
+						send "{@prefix} &aVous avez mis les messages de &a&l%arg 1% &aà &a&l%arg 2%"
+				else:
+					send "{@prefix} &aChoisi &c&lTrue&a pour activer les messages ou &c&lFalse&a pour désactiver les messages"
+			else:
+				send "{@prefix} &aChoisi le type de message &cMute / UnMute / Ban / TempBan / UnBan / Kick / Freeze / UnFreeze / BanIp / Avert / Report"
+		else:
+			send "&cTu n'as pas le droit de modifier les messages ! &c&l[&cADMIN&c&l]"
+
+#===================================#
+
+      #---- Partie LooKup ----#
+
+#===================================#
+
+command /lookup [<offline player>]:
+	trigger:
+		if player has the permission "MODO" or "ADMIN":
+			if arg 1 is set:
+				if arg 1 has the permission "{@bypassperm}":
+					send "{@prefixlook} &7Vous ne pouvez pas LooKup ce joueur !" to player
+					send "{@prefixlook} &7%player% a essayer de regarder vous LooKup !" to arg 1
+					stop
+				else:
+					send ""
+					send "&aI--------I  LooKup de %arg 1%  I--------I"
+					if {first.join.%arg 1%} is set:
+						send "&aPremière Connexion : %{first.join.%arg 1%}%"
+					else:
+						send "&aPremière Connexion : Jamais"
+					if {last.join.%arg 1%} is set:
+						send "&aDernière Connexion : %{last.join.%arg 1%}%"
+					else:
+						send "&aDernière Connexion : Jamais"
+					if {nombre.connect.%arg 1%} is set:
+						send "&aNombre de Connexion : %{nombre.connect.%arg 1%}%"
+					else:
+						send "&aNombre de Connexion : 0"
+					if {ip.%arg 1%} is set:
+						send "&aIp : %{ip.%arg 1%}%"
+					else:
+						send "&aIp : Aucune IP n'a été enregistrée "
+					if {nombre.mute.%arg 1%} is set:
+						send "&aNombre de Mute : %{nombre.mute.%arg 1%}%"
+					else:
+						send "&aNombre de Mute : 0"
+					if {nombre.ban.%arg 1%} is set:
+						send "&aNombre de Ban : %{nombre.ban.%arg 1%}%"
+					else:
+						send "&aNombre de Ban : 0"
+					if {nombre.tempban.%arg 1%} is set:
+						send "&aNombre de TempBan : %{nombre.tempban.%arg 1%}%"
+					else:
+						send "&aNombre de TempBan : 0"
+					if {nombre.freeze.%arg 1%} is set:
+						send "&aNombre de Freeze : %{nombre.freeze.%arg 1%}%"
+					else:
+						send "&aNombre de Freeze : 0"
+					if {nombre.avert.%arg 1%} is set:
+						send "&aNombre d'avertissement : %{nombre.avert.%arg 1%}%"
+					else:
+						send "&aNombre d'avertissement : 0"
+					if {nombre.avert.mute.%arg 1%} is set:
+						send "&aNombre d'avertissement pour Mute : %{nombre.avert.mute.%arg 1%}%"
+					else:
+						send "&aNombre d'avertissement pour Mute : 0"
+					if {nombre.avert.ban.%arg 1%} is set:
+						send "&aNombre d'avertissement pour Ban : %{nombre.avert.ban.%arg 1%}%"
+					else:
+						send "&aNombre d'avertissement pour Ban : 0"
+					if {nombre.kick.%arg 1%} is set:
+						send "&aNombre de Kick : %{nombre.kick.%arg 1%}%"
+					else:
+						send "&aNombre de Kick : 0"
+					if {nombre.alert.click.%arg 1%} is set:
+						send "&aNombre d'alert CPS : %{nombre.alert.click.%arg 1%}%"
+					else:
+						send "&aNombre d'alert CPS : 0"
+					send "&aNombre de mort : %{mort.%arg 1%}%"
+					send "&aNombre de kill : %{kill.%arg 1%}%"
+					send "&aRatio : %{ratio.%arg 1%}%"
+					send "&aI--------I  LooKup de %arg 1%  I--------I"
+					send ""
+			else:
+				send "{@prefixlook} &7De quelle joueur voulez-vous voir les informations ?"
+		else:
+			send "&cTu n'as pas le droit de voir les informations des joueurs ! &c&l[&cMODO&c&l]"
+
+#===================================#
+
+      #---- Partie Help ----#
+
+#===================================#
+
+command /helpmodo [<text>]:
+	trigger:
+		if player has the permission "MODO":
+			if arg 1 is not set:
+				if {language.fr.%player%} is true:
+					send ""
+					send "&7| -----&cListe des commandes&7----- |"
+					send "&9/modhelp sanction &7> &eAffiche les commandes de sanction."
+					send "&9/modhelp staff &7> &eAffiche les commandes pour le staff."
+					send "&7| -----&cListe des commandes&7----- |"
+					send ""
+				if {language.en.%player%} is true:
+					send ""
+					send "&7| -----&cLists of the commands&7----- |"
+					send "&9/modhelp sanction &7> &eShow the commands of sanction."
+					send "&9/modhelp staff &7> &eShow the commands for the staff."
+					send "&7| -----&cLists of the commands&7----- |"
+					send ""
+			if arg 1 is set:
+				if arg 1 is "sanction":
+					if {language.en.%player%} is true:
+						send ""
+						send "&7| ----- &cList of the commands&7 ----- |"
+						send "&9/moderation &7> &eOpen the GUI."
+						send "&9/tempban &7> &eTempban a player."
+						send "&9/ban &7> &eBan a player."
+						send "&9/banip &7> &eBanip a player."
+						send "&9/unban &7> &eUnban a player."
+						send "&9/mute &7> &eMute a player."
+						send "&9/unmute &7> &eUnmute a player."
+						send "&9/warning &7> &eAvert a player."
+						send "&9/kick & 7> &eKick a player."
+						send "&9/kickall &7> &eKick all players."
+						send "&7| ----- &cList of the commands&7 ----- |"
+						send ""
+					if {language.fr.%player%} is true:
+						send ""
+						send "&7| -----&cListe des commandes&7----- |"
+						send "&9/moderation &7> &eOuvrire le GUI."
+						send "&9/tempban &7> &eTempban un joueur."
+						send "&9/ban &7> &eBan un joueur."
+						send "&9/banip &7> &eBanip un joueur."
+						send "&9/unban &7> &eUnban un joueur."
+						send "&9/mute &7> &eMute un joueur."
+						send "&9/unmute &7> &eUnmute un joueur."
+						send "&9/avertissement &7> &eAvertir un joueur."
+						send "&9/kick &7> &eKick un joueur."
+						send "&9/kickall &7> &eKick tous les joueurs."
+						send "&7| -----&cListe des commandes&7----- |"
+						send ""
+				if arg 1 is "staff":
+					if {language.fr.%player%} is true:
+						send ""
+						send "&7| ----- &cListe des commandes&7 ----- |"
+						send "&9/staff &7> &eVoir le staff en ligne."
+						send "&9/liste &7> &eVoir la liste des tempban, ban, mute..."
+						send "&9/setbypassperm &7> &eSet la permission pour bypass les sanctions."
+						send "&9/configjsonapi &7> &eActiver ou désactiver les messages de confirmation de sanction."
+						send "&9/vanish &7> &eActiver le mode Invisible."
+						send "&9/mod &7> &eActiver le mode Modérateur."
+						send "&9/god &7> &eActiver le mode Invinsible."
+						send "&9/fly &7> &eActiver le mode Fly."
+						send "&9/randomtp &7> &eSe téléporter aléatoirement."
+						send "&9/verif &7> &eVerif un joueur."
+						send "&9/msgadm &7> &eActiver ou désactiver les messages de ban."
+						send "&9/lookup &7> &eVoir les informations d'un joueur."
+						send "&9/cps &7> &eVoir les CPS en direct d'un joueur."
+						send "&9/setmaxcps &7> &eSet la limite de CPS."
+						send "&7| ----- &cListe des commandes&7 ----- |"
+						send ""
+					if {language.en.%player%} is true:
+						send ""
+						send "&7| ----- &cList of the commands&7 ----- |"
+						send "&9/staff &7> &eSee the staff online."
+						send "&9/liste &7> &eSee the list of tempban, ban, mute ..."
+						send "&9/setbypassperm &7> &eSet permission to bypass penalties."
+						send "&9/configjsonapi &7> &eEnable or disable sanction confirmation messages."
+						send "&9/vanish &7> &eEnable Invisible Mode."
+						send "&9/mod &7> &eEnable Moderator mode."
+						send "&9/god &7> &eActivate the invsible mode."
+						send "&9/fly &7> &eActivate fly mode."
+						send "&9/randomtp &7> &eSe teleport randomly."
+						send "&9/verif &7> &eVerif a player."
+						send "&9/msgadm &7> &eActivate or deactivate ban messages."
+						send "&9/lookup &7> &eSee the information of the player."
+						send "&9/cps &7> &eSee live CPS of a player."
+						send "&9/setmaxcps &7> &eSet the limit of CPS."
+						send "&7| ----- &cList of the commands&7 ----- |"
+						send ""
+		else:
+			send "&cTu n'as pas le droit de voir la liste des commandes de modération &c&l[&cADMIN&c&l]&c !"
+#===================================#
+
+   #---- Partie SetBypassPerm ----#
+
+#===================================#
+
+command /setbypassperm [<text>]:
+	trigger:
+		if player has the permission "ADMIN":
+			if arg 1 is set:
+				set {bypassperm} to arg 1
+				send "{@prefix} &aVous avez set la permission pour le bypass à %arg 1%"
+				stop
+			if arg 1 is not set:
+				send "{@prefix} &aQuelle permission veux-tu set pour le bypass !" to player
+		else:
+			send "&cTu n'as pas le droit de set la permission bypass &c&l[&cADMIN&c&l]&c !"
+
+#===================================#
+
+   #---- Partie Setlanguage ----#
+
+#===================================#
+
+command /setlanguage [<text>]:
+	trigger:
+		if arg 1 is not set:
+			send ""
+			send "&aChose your lang FR or EN"
+			send ""
+		if arg 1 is set:
+			if arg 1 is "FR" or "EN":
+				if arg 1 is "FR":
+					set {language.fr.%player%} to true
+					set {language.en.%player%} to false
+					set {language.%player%} to true
+					send "&aTu as choisis la langue FR !"
+				if arg 1 is "EN":
+					set {language.en.%player%} to true
+					set {language.fr.%player%} to false
+					set {language.%player%} to true
+					send "&aYou have chosen the language EN"
+			else:
+				send ""
+				send "&aChose your lang FR or EN"
+				send ""
+				
+#===================================#
+
+       #---- Partie MAJ ----#
+
+#===================================#
+
+command /majmod [<text>]:
+	trigger:
+		if player has the permission "ADMIN":
+			if arg 1 is set:
+				if arg 1 is "true" or "false" or "search":
+					if arg 1 is "true":
+						set {majmod} to true
+						send "{@prefixupdate} &aTu as activé les MAJ Automatiques"
+					else:
+						set {majmod} to false
+						send "{@prefixupdate} &aTu as désactiver les MAJ Automatiques"
+					if arg 1 is "search":
+						if text from "https://pastebin.com/raw/5dyZdq2K" is not "{@actuelversion}":
+							broadcast "{@prefixupdate} &aMise à jour du Skript De Modération !"
+							download from "https://pastebin.com/raw/sUwu3tRW" to "plugins/Skript/scripts/Moderation.sk"
+							wait 5 ticks
+							execute console command "/sk reload Moderation"
+							broadcast "{@prefixupdate} &aMise à jour Terminée!"
+				else:
+					send "{@prefixupdate} &aSi vous voulez activer les MAJ automatiques faites True sinon faites False"
+			else:
+				send "{@prefixupdate} &aSi vous voulez activer les MAJ automatiques faites True sinon faites False"
+		else:
+			send "{@prefixupdate} &cTu n'as pas le droit d'activer ou désactiver les MAJ &c&l[&cADMIN&c&l]&c !"
+				
+#===================================#
+
+        #---- Partie /mod ----#
+
+#===================================#
+
+command /mod [<offline player>]:
+	trigger:
+		if player has the permission "MODO":
+			if arg 1 is not set:
+				if {mod.%player%} is false:
+					set {mod.%player%} to true
+					hide player from all players
+					send " "
+					send "&aMode Modération Activer !"
+					send " "
+					set player's flight mode to true
+					set {vanish.%player%} to true
+					set {fly.%player%} to true
+					set {_count} to 0
+					loop 36 times:
+						set {mod.inventaire.%player%.%{_count}%} to slot {_count} of player's inventory
+						add 1 to {_count}
+					set {mod::casque::%player%} to player's helmet
+					set {mod::plastron::%player%} to player's chestplate
+					set {mod::pantalon::%player%} to player's leggings
+					set {mod::bottes::%player%} to player's boots
+					clear player's inventory
+					set player's gamemode to survival
+					set slot 0 of player's inventory to iron hoe named "&aVanish"
+					set slot 1 of player's inventory to feather named "&aFly"
+					set slot 2 of player's inventory to bone named "&aKill"
+					set slot 4 of player's inventory to blaze rod named "&aRandomTP"
+					set slot 6 of player's inventory to stick of knockback 1 and unbreaking 10 named "&bKB I"
+					set slot 7 of player's inventory to stick of knockback 2 and unbreaking 10 named "&bKB II"
+					set slot 8 of player's inventory to stick of knockback 10 and unbreaking 10 named "&bKB X"
+					add "&a%player% Mode Modération Activer" to {modlist::*}
+					heal the player
+					set the food level of player to 10
+					stop
+				if {mod.%player%} is true:
+					set {mod.%player%} to false
+					set player's flight mode to false
+					send " "
+					send "&cMode Modération Désactiver"
+					send " "
+					clear player's inventory
+					reveal player from all players
+					set {vanish.%player%} to false
+					set {fly.%player%} to false
+					set {_count} to 0
+					loop 36 times:
+						set slot {_count} of player to {mod.inventaire.%player%.%{_count}%}
+						add 1 to {_count}
+					set the helmet of player to {mod::casque::%player%}
+					set the chestplate of player to {mod::plastron::%player%}
+					set the leggings of player to {mod::pantalon::%player%}
+					set the boots of player to {mod::bottes::%player%}
+					remove "&a%player% Mode Modération Activer" from {modlist::*}
+					stop
+			if arg 1 is set:
+				if arg 1 is online:
+					if {mod.%arg 1%} is false:
+						set {mod.%arg 1%} to true
+						hide arg 1 from all players
+						send " " to arg 1
+						send "&aMode Modération Activer par %player% !" to arg 1
+						send " " to arg 1
+						set arg 1's flight mode to true
+						set {vanish.%arg 1%} to true
+						set {fly.%arg 1%} to true
+						set {_count} to 0
+						loop 36 times:
+							set {mod.inventaire.%arg 1%.%{_count}%} to slot {_count} of arg 1's inventory
+							add 1 to {_count}
+						set {mod::casque::%arg 1%} to arg 1's helmet
+						set {mod::plastron::%arg 1%} to arg 1's chestplate
+						set {mod::pantalon::%arg 1%} to arg 1's leggings
+						set {mod::bottes::%arg 1%} to arg 1's boots
+						clear arg 1's inventory
+						set arg 1's gamemode to survival
+						set slot 0 of arg 1's inventory to iron hoe named "&aVanish"
+						set slot 1 of arg 1's inventory to feather named "&aFly"
+						set slot 2 of arg 1's inventory to bone named "&aKill"
+						set slot 4 of arg 1's inventory to blaze rod named "&aRandomTP"
+						set slot 6 of arg 1's inventory to stick of knockback 1 and unbreaking 10 named "&bKB I"
+						set slot 7 of arg 1's inventory to stick of knockback 2 and unbreaking 10 named "&bKB II"
+						set slot 8 of arg 1's inventory to stick of knockback 10 and unbreaking 10 named "&bKB X"
+						add "&a%arg 1% Mode Modération Activer Par %player%" to {modlist::*}
+						heal the arg 1
+						set the food level of arg 1 to 10
+						set {mod.modeur.%arg 1%} to player
+						stop
+					if {mod.%arg 1%} is true:
+						set {mod.%arg 1%} to false
+						set player's flight mode to false
+						send " " to arg 1
+						send "&cMode Modération Désactiver Par %player% !" to arg 1
+						send " " to arg 1
+						clear arg 1's inventory
+						reveal arg 1 from all players
+						set {vanish.%arg 1%} to false
+						set {fly.%arg 1%} to false
+						set {_count} to 0
+						remove "&a%arg 1% Mode Modération Activer Par %{mod.modeur.%arg 1%}%" from {modlist::*}
+						loop 36 times:
+							set slot {_count} of arg 1 to {mod.inventaire.%arg 1%.%{_count}%}
+							add 1 to {_count}
+						set the helmet of arg 1 to {mod::casque::%arg 1%}
+						set the chestplate of arg 1 to {mod::plastron::%arg 1%}
+						set the leggings of arg 1 to {mod::pantalon::%arg 1%}
+						set the boots of arg 1 to {mod::bottes::%arg 1%}
+						stop
+		else:
+			send "&cTu n'as pas le droit d'utiliser le /mod &c&l[&cMODO&c&l]&c !"
+
+#===================================#
+
+       #---- Partie Vanish ----#
+
+#===================================#
+
+command /vanish [<offline player>]:
+	trigger:
+		if player has the permission "MODO" or "ADMIN":
+			if arg 1 is set:
+				if arg 1 is online:
+					if {vanish.%arg 1%} is false:
+						set {vanish.%arg 1%} to true
+						hide arg 1 from all players
+						send "{@prefix} &aMode Vanish Activer !" to arg 1
+						send "{@prefix} &aVous avez activer le Mode Vanish de %arg 1% !"
+						add "&a%arg 1% Mode Vanish Activer Par %player%" to {vanishlist::*}
+						set {vanish.vanisheur.%arg 1%} to player
+						stop
+					if {vanish.%arg 1%} is true:
+						set {vanish.%arg 1%} to false
+						reveal arg 1 from all players
+						set {vanish.%arg 1%} to false
+						remove "&a%player% Mode Vanish Activer" from {vanishlist::*}
+						remove "&a%player% Mode Vanish Activer Par %{vanish.vanisheur.%player%}%" from {vanishlist::*}
+						send "{@prefix} &cMode Vanish Désactiver !" to arg 1
+						send "{@prefix} &cVous avez désactiver le Mode Vanish de %arg 1% !" to player
+						stop
+			if arg 1 is not set:
+				if {vanish.%player%} is false:
+					hide player from all players
+					send "{@prefix} &aMode Vanish Activer !"
+					add "&a%player% Mode Vanish Activer" to {vanishlist::*}
+					set {vanish.%player%} to true
+					stop
+				if {vanish.%player%} is true:
+					reveal player from all players
+					send "{@prefix} &cMode Vanish Désactiver !"
+					remove "&a%arg 1% Mode Vanish Activer" from {vanishlist::*}
+					remove "&a%arg 1% Mode Vanish Activer Par %{vanish.vanisheur.%arg 1%}%" from {vanishlist::*}
+					set {vanish.%player%} to false
+					stop
+				else:
+					send "{@prefix} &aLe joueur %arg 1% n'est pas connecté !"
+		else:
+			send "&cTu n'as pas le droit de te rendre invisible &c&l[&cMODO&c&l]&c !"
+
+#===================================#
+
+         #---- Partie God ----#
+
+#===================================#
+
+command /god [<offline player>]:
+	trigger:
+		if player has the permission "MODO":
+			if arg 1 is not set:
+				if {god.%player%} is false:
+					set {god.%player%} to true
+					send "{@prefix} &aMode Invinsible Activer !" to player
+					add "&a%player% Mode Invinsible Activer" to {godlist::*}
+					heal the player
+					set the food level of player to 10
+					stop
+				if {god.%player%} is true:
+					set {god.%player%} to false
+					send "{@prefix} &cMode Invinsible Désactiver !" to player
+					remove "&a%player% Mode Invinsible Activer" from {godlist::*}
+					stop
+			else:
+				if arg 1 is online:
+					if {god.%arg 1%} is false:
+						set {god.%arg 1%} to true
+						send "{@prefix} &aVous avez activer le Mode Invinsible de %arg 1%" to player
+						send "{@prefix} &aMode Invinsible Activer" to arg 1
+						set {god.godeur.%arg 1%} to player
+						add "&a%arg 1% Mode Invinsible Activer Par %player%" to {godlist::*}
+						heal the arg 1
+						set the food level of arg 1 to 10
+						stop
+					if {god.%arg 1%} is true:
+						set {god.%arg 1%} to false
+						send "{@prefix} &cVous avez désactiver le Mode Invinsible de %arg 1% !" to player
+						send "{@prefix} &cMode Invinsible Désactiver !" to arg 1
+						remove "&a%arg 1% Mode Invinsible Activer Par %{god.godeur.%arg 1%}%" from {godlist::*}
+						stop
+				else:
+					send "{@prefix} &aLe joueur %arg 1% n'est pas connecté !"
+		else:
+			send "&cTu n'as pas le droit de devenir invinsible &c&l[&cMODO&c&l]&c !"
+
+#===================================#
+
+       #---- Partie RandomTP ----#
+
+#===================================#
+
+command /randomtp:
+	trigger:
+		if player has the permission "MODO":
+			loop all players:
+				add loop-player to {randomtp::*}
+			set {_player.randomtp.%player%} to a random element out of {randomtp::*}
+			if {_player.randomtp.%player%} is player:
+				send "{@prefix} &aMerci de réessayer !"
+				stop
+			else:
+				teleport player to {_player.randomtp.%player%}
+				clear {randomtp::*}
+				send "{@prefix} &aVous avez été téléporté à %{_player.randomtp.%player%}%"
+		else:
+			send "&cTu n'as pas le droit de te téléporté aléatoirement &c&l[&cMODO&c&l]&c !"
+
+#===================================#
+
+         #---- Partie Fly ----#
+
+#===================================#
+
+command /fly [<offline player>]:
+	trigger:
+		if player has the permission "MODO":
+			if arg 1 is not set:
+				if {fly.%player%} is false:
+					set {fly.%player%} to true
+					set player's flight mode to true
+					send "{@prefix} &aMode Fly Activer" to player
+					add "&a%player% Mode Fly Activer" to {flylist::*}
+					stop
+				if {fly.%player%} is true:
+					set {fly.%player%} to false
+					set player's flight mode to false
+					send "{@prefix} &cMode Fly Désactiver" to player
+					remove "&a%player% Mode Fly Activer" from {flylist::*}
+					stop
+			if arg 1 is set:
+				if arg 1 is online:
+					if {fly.%arg 1%} is false:
+						set {fly.%arg 1%} to true
+						set arg 1's flight mode to true
+						send "{@prefix} &aMode Fly Activer Par %player%" to arg 1
+						send "{@prefix} &aMode Fly Activer Pour %arg 1%" to player
+						add "&a%arg 1% Mode Fly Activer Par %player%" to {flylist::*}
+						set {fly.flyeur.%arg 1%} to player
+						stop
+					if {fly.%arg 1%} is true:
+						set {fly.%arg 1%} to false
+						set arg 1's flight mode to false
+						send "{@prefix} &cMode Fly Désactiver Par %player%" to arg 1
+						send "{@prefix} &cMode Fly Désactiver Pour %arg 1%" to player
+						remove "&a%arg 1% Mode Fly Activer Par %{fly.flyeur.%arg 1%}%" from {flylist::*}
+						stop
+				else:
+					send "{@prefix} &aLe joueur %arg 1% n'est pas connecté !"
+		else:
+			send "&cTu n'as pas le droit de fly &c&l[&cMODO&c&l]&c !"
+				
+#===================================#
+
+     #---- Partie Setmaxcps ----#
+
+#===================================#
+
+command /setmaxcps [<text>]:
+	trigger:
+		if player has the permission "ADMIN":
+			if arg 1 is set:
+				set {_cpsmax} to arg 1 parsed as a number
+				if {_cpsmax} is set:
+					set {cpsmax} to arg 1
+					send "{@prefix} &aTu as set la limite de clique à %arg 1% CPS !"
+					clear {_cpsmax}
+				else:
+					send "{@prefix} &a%arg 1% n'est pas un nombre !"
+			else:
+				send "{@prefix} &aQuelle nombre veux-tu set pour la limite de CPS !"
+		else:
+			send "&cTu n'as pas le droit de set la limite de CPS &c&l[&cADMIN&c&l]&c !"
+			
+#===================================#
+
+         #---- Partie CPS ----#
+
+#===================================#
+
+command /cps [<offline player>] [<text>]:
+	trigger:
+		if player has the permission "MODO" or "ADMIN":
+			if arg 1 is set:
+				if arg 2 is set:
+					if arg 2 is "info":
+						send ""
+						send "&aI--------I  CPS de %arg 1%  I--------I"
+						if {nombre.alert.click.%arg 1%} is set:
+							send "&aNombre d'alert CPS : %{nombre.alert.click.%arg 1%}%"
+						else:
+							send "&aNombre d'alert CPS : 0"
+						if {maxclick.%arg 1%} is set:
+							send "&aCPS maximum atteint : %{maxclick.%arg 1%}%"
+						else:
+							send "&aCPS maximum atteint : 0"
+						send "&aI--------I  CPS de %arg 1%  I--------I"
+						send ""
+					if arg 2 is "look" or "view":
+						if arg 1 is online:
+							set {clicks.gauche.%arg 1%} to 0
+							set {clicks.droit.%arg 1%} to 0
+							set {clickverif.%arg 1%} to true
+							send "{@prefix} &aLancement Du Test, merci de patienter !"
+							wait 1 seconds
+							set {clickverif.%arg 1%} to false
+							send "{@prefix} &aRésultat: %{clicks.gauche.%arg 1%}% CPS (gauche)"
+							send "{@prefix} &aRésultat: %{clicks.droit.%arg 1%}% CPS (droit)"
+							clear {clicks.gauche.%arg 1%}
+							clear {clicks.droit.%arg 1%}
+						else:
+							send "{@prefix} &aLe joueur %arg 1% n'est pas connecté !"
+					if arg 2 is not "look" or "view" or "info":
+						send "{@prefix} &aUtilise / View \ pour voir les CPS en direct !"
+						send "{@prefix} &aUtilise / Info \ pour voir les informations d'un joueur"
+				else:
+					send "{@prefix} &aUtilise / View \ pour voir les CPS en direct !"
+					send "{@prefix} &aUtilise / Info \ pour voir les informations d'un joueur"
+			else:
+				send "{@prefix} &aQuelle joueur veux-tu vérifier !"
+		else:
+			send "&cTu n'as pas le droit de voir les CPS des joueur &c&l[&cMODO&c&l]&c !"
+
+#===================================#
+
+         #---- Partie Verif ----#
+
+#===================================#
+
+command /verif [<player>]:
+	trigger:	
+		if player has the permission "MODO":
+			if arg 1 is set:
+				if arg 1 is online:
+					open virtual chest inventory with 6 rows named "&a« Vérif » %arg 1%" to player
+					set {_playerinv} to arg 1
+					set {_slot} to 0
+					loop 35 times:
+						set {verif.inv.%arg 1%.%{_slot}%} to slot {_slot} of arg 1's inventory
+						add 1 to {_slot}
+					set {_slot} to 0
+					set {_slotmenu} to 09
+					format gui slot 44 of player with slot 35 of arg-1's inventory to nothing
+					format gui slot 45 of player with slot 00 of arg-1's inventory to nothing
+					format gui slot 46 of player with slot 01 of arg-1's inventory to nothing
+					format gui slot 47 of player with slot 02 of arg-1's inventory to nothing
+					format gui slot 48 of player with slot 03 of arg-1's inventory to nothing
+					format gui slot 49 of player with slot 04 of arg-1's inventory to nothing
+					format gui slot 50 of player with slot 05 of arg-1's inventory to nothing
+					format gui slot 51 of player with slot 06 of arg-1's inventory to nothing
+					format gui slot 52 of player with slot 07 of arg-1's inventory to nothing
+					format gui slot 53 of player with slot 08 of arg-1's inventory to nothing
+					loop 36 times:
+						format gui slot {_slotmenu} of player with {verif.inv.%arg 1%.%{_slot}%}
+						add 1 to {_slot}
+						add 1 to {_slotmenu}
+					set {vie.%arg 1%} to arg 1's health
+					set {food.%arg 1%} to arg 1's hunger
+					if arg 1's helmet is diamond helmet:
+						set {armor.fr.helmet.%arg 1%} to "Casque En Diamant"
+					if arg 1's chestplate is diamond chestplate:
+						set {armor.fr.chestplate.%arg 1%} to "Plastron En Diamant"
+					if arg 1's leggings is diamond leggings:
+						set {armor.fr.leggings.%arg 1%} to "Pantalon En Diamant"
+					if arg 1's boots is diamond boots:
+						set {armor.fr.boots.%arg 1%} to "Bottes En Diamant"
+					if arg 1's helmet is iron helmet:
+						set {armor.fr.helmet.%arg 1%} to "Casque En Fer"
+					if arg 1's chestplate is iron chestplate:
+						set {armor.fr.chestplate.%arg 1%} to "Plastron En Fer"
+					if arg 1's leggings is iron leggings:
+						set {armor.fr.leggings.%arg 1%} to "Pantalon En Fer"
+					if arg 1's boots is iron boots:
+						set {armor.fr.boots.%arg 1%} to "Bottes En Fer"
+					if arg 1's helmet is golden helmet:
+						set {armor.fr.helmet.%arg 1%} to "Casque En or"
+					if arg 1's chestplate is golden chestplate:
+						set {armor.fr.chestplate.%arg 1%} to "Plastron En Or"
+					if arg 1's leggings is golden leggings:
+						set {armor.fr.leggings.%arg 1%} to "Pantalon En Or"
+					if arg 1's boots is golden boots:
+						set {armor.fr.boots.%arg 1%} to "Bottes En Or"
+					if arg 1's helmet is chainmail helmet:
+						set {armor.fr.helmet.%arg 1%} to "Casque En Chainmail"
+					if arg 1's chestplate is chainmail chestplate:
+						set {armor.fr.chestplate.%arg 1%} to "Plastron En Chainmail"
+					if arg 1's leggings is chainmail leggings:
+						set {armor.fr.leggings.%arg 1%} to "Pantalon En Chainmail"
+					if arg 1's boots is chainmail boots:
+						set {armor.fr.boots.%arg 1%} to "Bottes En Chainmail"
+					if arg 1's helmet is leather helmet:
+						set {armor.fr.helmet.%arg 1%} to "Casque En Cuir"
+					if arg 1's chestplate is leather chestplate:
+						set {armor.fr.chestplate.%arg 1%} to "Plastron En Cuir"
+					if arg 1's leggings is leather leggings:
+						set {armor.fr.leggings.%arg 1%} to "Pantalon En Cuir"
+					if arg 1's boots is leather boots:
+						set {armor.fr.boots.%arg 1%} to "Bottes En Cuir"
+					if {armor.fr.helmet.%arg 1%} is not set:	
+						set {armor.fr.helmet.%arg 1%} to "Pas de Casque"
+					if {armor.fr.chestplate.%arg 1%} is not set:	
+						set {armor.fr.chestplate.%arg 1%} to "Pas de Plastron"
+					if {armor.fr.leggings.%arg 1%} is not set:	
+						set {armor.fr.leggings.%arg 1%} to "Pas de Pantalon"
+					if {armor.fr.boots.%arg 1%} is not set:	
+						set {armor.fr.boots.%arg 1%} to "Pas de Bottes"
+					clear {effects.%arg 1%::*}
+					set {effects.%arg 1%::*} to all of the active potion effects on arg 1
+					if arg 1's gamemode is survival:
+						format gui slot 4 of player with skull of "%arg 1%" parsed as offline player named "&a« &a%arg 1% »" with lore "&aMode de Jeu : Survie||||&a%{armor.fr.helmet.%arg 1%}%||&a%{armor.fr.chestplate.%arg 1%}%||&a%{armor.fr.leggings.%arg 1%}%||&a%{armor.fr.boots.%arg 1%}%|| ||&aVie : %{vie.%arg 1%}% &c❤||&aNourriture : %{food.%arg 1%}%"
+					if arg 1's gamemode is creative:
+						format gui slot 4 of player with skull of "%arg 1%" parsed as offline player named "&a« &a%arg 1% »" with lore "&aMode de Jeu : Créatif||||&a%{armor.fr.helmet.%arg 1%}%||&a%{armor.fr.chestplate.%arg 1%}%||&a%{armor.fr.leggings.%arg 1%}%||&a%{armor.fr.boots.%arg 1%}%|| ||&aVie : %{vie.%arg 1%}% &c❤||&aNourriture : %{food.%arg 1%}%"
+					if arg 1's gamemode is adventure:
+						format gui slot 4 of player with skull of "%arg 1%" parsed as offline player named "&a« &a%arg 1% »" with lore "&aMode de Jeu : Adventure||||&a%{armor.fr.helmet.%arg 1%}%||&a%{armor.fr.chestplate.%arg 1%}%||&a%{armor.fr.leggings.%arg 1%}%||&a%{armor.fr.boots.%arg 1%}%|| ||&aVie : %{vie.%arg 1%}% &c❤||&aNourriture : %{food.%arg 1%}%"
+					if {effects.%arg 1%::*} is set:
+						format gui slot 2 of player with potion named "&1Potions" with lore "&1Effet :||&1%{effects.%arg 1%::*}%"
+					else:
+						format gui slot 2 of player with potion named "&1Potions" with lore "&1Effet :||&1Aucun effet"
+					format gui slot 0 of player with paper named "&cStatistique" with lore "&cKill : %{kill.%arg 1%}%||&cMort : %{mort.%arg 1%}%"
+					format gui slot 6 of player with diamond sword named "&6CPS" with lore "&6CPS MAX : %{maxclick.%arg 1%}%||&6CPS ALERT : %{nombre.alert.click.%arg 1%}%"
+					make a gui slot 9, 10, 11, 12, 13, 14, 15, 16 and 17 of player with 1 stained glass pane named " "
+					format gui slot 8 of player with Barrier named "&fActualisé" to run player command "/verif %arg 1%"
+				else:
+					send "{@prefix} &aLe joueur %arg 1% n'est pas connecté !"
+			else:
+				send "{@prefix} &aQuelle joueur veux-tu vérif !"
+		else:
+			send "&cTu n'as pas le droit de vérif un joueur &c&l[&cMODO&c&l]&c !"
+		
+#===================================#
+
+         #---- Partie Staff ----#
+
+#===================================#
+
+command /staff [<text>]:
+	trigger:
+		if player has the permission "STAFF":
+			if arg 1 is not set:
+				loop all players:
+					if loop-player has permission "STAFF":
+						set {stafflist::*} to loop-player
+						send ""
+						send "{@prefix} &a ----------------- Staff En Ligne -----------------"
+						send "&a%{stafflist::*}%"
+						send ""
+			if arg 1 is set:
+				loop all players:
+					if loop-player has permission "MODO" or "ADMIN":
+						send ""
+						send "{@prefixstaff} &6[%player%] &b%arg 1%" to loop-player
+						send ""
+		else:
+			send "{@prefix} &cTu n'as pas le droit de faire le /staff &c&l[&cMODO&c&l]&c !"
+					
+#===================================#
+
+         #---- Partie ProtectStaff ----#
+
+#===================================# 
+
+command /protectstaff [<text>]:
+	trigger:
+		if player has the permission "ADMIN":
+			if arg 1 is set:
+				if arg 1 is "true" or "false":
+					if arg 1 is "true":
+						set {protectstaff} to true
+					if arg 1 is "false":
+						set {protectstaff} to false
+				else:
+					send "{@prefix} &aTrue (Protêge les membres du staff des sanctions) &aFalse (Ne protêge pas les membres du staff des sanctions)"
+			else:
+				send "{@prefix} &aTrue (Empêche les membres du staff d'avoir des sanctions) &aFalse (N'empêche pas les membres du staff d'avoir des sanctions)"
+		else:
+			send "{@prefix} &cTu n'as pas le droit de faire cette commande &c&l[&cADMIN&c&l]&c !"
+			
+			
+#===================================#
+
+       #---- Partie MAJ ----#
+
+#===================================#
+
+command /troll [<offline player>] [<text>]:
+	executable by: console and player
+	trigger:
+		if player has the permission "MODO":
+			if arg 1 is not set:
+				send "{@prefixtroll} &aQuelle joueur veux-tu troll ?"
+			else:
+				if arg 1 is online:
+					if arg 2 is not set:
+						send ""
+						send "{@prefixtroll} &c&lCrash: &aFaire crash le jeu du joueur !"
+						send "{@prefixtroll} &c&lFakeVerif: &aFaire une fausse verif au joueur !"
+						send "{@prefixtroll} &c&lFakeBan: &aFaire un faux ban au joueur !"
+						send "{@prefixtroll} &c&lFakeKick: &aFaire un faux kick au joueur !"
+						send "{@prefixtroll} &c&lFakeTnT: &aFaire apparaître une fausse TnT au joueur !"
+						send "{@prefixtroll} &c&lZombie: &aFaire apparaître 20 zombies au joueur !"
+						send "{@prefixtroll} &c&lAvion: &aFaire faire l'avion au joueur !"
+						send ""
+					else:
+						if arg 2 is "crash" or "fakeban" or "fakekick" or "fakeverif" or "faketnt" or "zombie" or "avion":
+							if arg 2 is "crash":
+								send "{@prefixtroll} &aTentative de troll !" to player
+								if arg 1 doesn't have the permission "MODO" or "ADMIN":
+									send "{@prefixtroll} &aTroll Réussi !" to player
+									show  9999999999999 "flame" particles at location of arg 1 for arg 1
+								else:
+									send "{@prefixtroll} &aLa tentative de troll a échoué !"
+							if arg 2 is "fakeban":
+								send "{@prefixtroll} &aTentative de troll !" to player
+								if arg 1 doesn't have the permission "MODO" or "ADMIN":
+									send "{@prefixtroll} &aTroll Réussi !" to player
+									set {bantrolldate.%arg 1%} to now
+									set {bantroll.%arg 1%} to true
+									kick arg 1 due to "&fVous avez été banni par &c%player%&f !%nl%&fRaison du Bannissement: &cCheat !%nl%&fDate du Bannissement: &c%{bantrolldate.%arg 1%}%"
+								else:
+									send "{@prefixtroll} &aLa tentative de troll a échoué !"
+							if arg 2 is "fakekick":
+								send "{@prefixtroll} &aTentative de troll !" to player
+								if arg 1 doesn't have the permission "MODO" or "ADMIN":
+									send "{@prefixtroll} &aTroll Réussi !" to player
+									kick arg 1 due to "Internal Exception Sécurité: java.io.IOException.securité: Une connexion établie a été abandonnée par un logiciel malveillant"
+								else:
+									send "{@prefixtroll} &aLa tentative de troll a échoué !"
+							if arg 2 is "fakeverif":
+								send "{@prefixtroll} &aTentative de troll !" to player
+								if arg 1 doesn't have the permission "MODO" or "ADMIN":
+									send "{@prefixtroll} &aTroll Réussi !" to player
+									if player has the permission "ADMIN":
+										send "{@prefix} &c&l[&cAdministrateur] %player% &r: L'anticheat a détecté un cheat sur votre ordinateur !"
+										wait 2 seconds
+										send "{@prefix} &c&l[&cAdministrateur] %player% &r: Avoue ou tu seras ban def !"
+										wait 2 seconds
+										send "{@prefix} &c&l[&cAdministrateur] %player% &r: Avoue commence pas à m'énerver !"
+										wait 4 seconds
+										send "{@prefix} &c&l[&cAdministrateur] %player% &r: Si tu avoue tu auras que 2 semaines de ban !"
+										wait 1 seconds
+										send "{@prefix} &c&l[&cAdministrateur] %player% &r: Sinon !"
+										wait 10 seconds
+										send "{@prefix} &c&l[&cAdministrateur] %player% &r: Bon tu rep ou ban def !"
+										wait 4 seconds
+										send "{@prefix} &c&l[&cAdministrateur] %player% &r: Je suis vraiment vénere la !"
+										wait 45 seconds
+										send "{@prefix} &c&l[&cAdministrateur] %player% &r: Bon Ok Tchao Ban def mon poto !"
+										wait 30 seconds
+										send "{@prefix} &c&l[&cAdministrateur] %player% &r: Lache Poce Blo Pour plus de Prank (: !"
+									if player has the permission "MODO":
+										send "{@prefix} &6&l[&Modérateur] %player% &r: L'anticheat a détecté un cheat sur votre ordinateur !"
+										wait 2 seconds
+										send "{@prefix} &6&l[&Modérateur] %player% &r: Avoue ou tu seras ban def !"
+										wait 2 seconds
+										send "{@prefix} &6&l[&Modérateur] %player% &r: Avoue commence pas à m'énerver !"
+										wait 4 seconds
+										send "{@prefix} &6&l[&Modérateur] %player% &r: Si tu avoue tu auras que 2 semaines de ban !"
+										wait 1 seconds
+										send "{@prefix} &6&l[&Modérateur] %player% &r: Sinon !"
+										wait 10 seconds
+										send "{@prefix} &6&l[&Modérateur] %player% &r: Bon tu rep ou ban def !"
+										wait 4 seconds
+										send "{@prefix} &6&l[&Modérateur] %player% &r: Je suis vraiment vénere la !"
+										wait 45 seconds
+										send "{@prefix} &6&l[&Modérateur] %player% &r: Bon Ok Tchao Ban def mon poto !"
+										wait 30 seconds
+										send "{@prefix} &6&l[&Modérateur] %player% &r: Lache Poce Blo Pour plus de Prank (: !"
+								else:
+									send "{@prefixtroll} &aLa tentative de troll a échoué !"
+							if arg 2 is "faketnt":
+								send "{@prefixtroll} &aTentative de troll !" to player
+								if arg 1 doesn't have the permission "MODO" or "ADMIN":
+									send "{@prefixtroll} &aTroll Réussi !" to player
+									create a fake explosion at arg 1
+									wait 1 seconds
+									create a fake explosion at arg 1
+									wait 2 seconds
+									create a fake explosion at arg 1
+									wait 2 seconds
+									create a fake explosion at arg 1
+									wait 2 seconds
+									create a fake explosion at arg 1
+									wait 1 seconds
+									create a fake explosion at arg 1
+									wait 5 tick
+									create a fake explosion at arg 1
+								else:
+									send "{@prefixtroll} &aLa tentatvie de troll a échoué !"
+							if arg 2 is "zombie":
+								send "{@prefixtroll} &aTentative de troll !" to player
+								if arg 1 doesn't have the permission "MODO" or "ADMIN":
+									send "{@prefixtroll} &aTroll Réussi !" to player
+									apply potion of regeneration of tier 2 to arg 1 for 25 seconds
+									spawn 20 zombie at arg 1
+								else:
+									send "{@prefixtroll} &aLa tentative de troll a échoué !"
+							if arg 2 is "avion":
+								send "{@prefixtroll} &aTentative de troll !" to player
+								if arg 1 doesn't have the permission "MODO" or "ADMIN":
+									send "{@prefixtroll} &aTroll Réussi !" to player
+									apply resistance 100 to arg 1 for 20 seconds
+									push argument-1 upwards at force 9
+									wait 1 seconds
+									push argument-1 forwards at force 9
+									broadcast ""
+									broadcast "&6Le joueur %arg 1% a été détecté par l'AntiCheat ! Raison : Fly"
+									broadcast ""
+								else:
+									send "{@prefixtroll} &aLa tentative de troll a échoué !"
+						else:
+							send ""
+							send "{@prefixtroll} &c&lCrash: &aFaire crash le jeu du joueur !"
+							send "{@prefixtroll} &c&lFakeVerif: &aFaire une fausse verif au joueur !"
+							send "{@prefixtroll} &c&lFakeBan: &aFaire un faux ban au joueur !"
+							send "{@prefixtroll} &c&lFakeKick: &aFaire un faux kick au joueur !"
+							send "{@prefixtroll} &c&lFakeTnT: &aFaire apparaître une fausse TnT au joueur !"
+							send "{@prefixtroll} &c&lZombie: &aFaire apparaître 20 zombies au joueur !"
+							send "{@prefixtroll} &c&lAvion: &aFaire faire l'avion au joueur !"
+							send ""
+				else:
+					send "{@prefixtroll} &aLe joueur %arg 1% n'est pas connecté !"
+
+#===================================#
+
+      #---- Partie EVENT ----#
+
+#===================================#
+
+on leftclick:  
+	add 1 to {click.%player%}
+	if {click.%player%} > {maxclick.%player%}:
+		set {maxclick.%player%} to {click.%player%}
+	if {click.%player%} >= {cpsmax}:
+		add 1 to {nombre.alert.click.%player%}	
+		loop all players:
+			if loop-player has permission "MODO" or "ADMIN" or "STAFF":
+				send "{@prefix} &cLe joueur %player% a fait %{click.%player%}% cliques" to loop-player
+				
+on rightclick:
+	add 1 to {click.%player%}
+	if {click.%player%} > {maxclick.%player%}:
+		set {maxclick.%player%} to {click.%player%}
+	if {click.%player%} >= {cpsmax}:
+		add 1 to {nombre.alert.click.%player%}	
+		loop all players:
+			if loop-player has permission "MODO" or "ADMIN" or "STAFF":
+				send "{@prefix} &cLe joueur %player% a fait %{click.%player%}% cliques" to loop-player
+
+every 1 second:
+    loop all players:
+        set {click.%loop-player%} to 0
+
+on join:
+	if {tempban.%player%} is set:
+		if difference between now and {tempban.date.%player%} is bigger than {tempban.temps.%player%}:
+			clear {tempban.raison.%player%}
+			clear {tempban.bannisseur.%player%}
+			clear {tempban.date.%player%}
+			clear {tempban.temp.%player%}
+			set {tempban.%player%} to false
+			set {bantotal.%player%} to false
+			set {tempban.counter.%player%} to 0
+		if difference between now and {tempban.date.%player%} is smaller than {tempban.temps.%player%}:
+			add 1 to {tempban.counter.%player%}
+			kick player due to "{@msgtempban2}"
+			set join message to " "
+	if {banip.%player%} is true:
+		if {banip.ip.%player%} is IP of player:
+			add 1 to {banip.counter.%player%}
+			kick player due to "{@msgbanip2}"
+			set join message to " "
+	if {ban.%player%} is true:
+		add 1 to {ban.counter.%player%}
+		kick player due to "{@bandefmsg2}"
+		set join message to " "
+
+
+on chat:
+	if {mute.%player%} is true:
+		if difference between now and {mute.date.%player%} is bigger than {mute.temp.%player%}:
+			remove "&b%player% &e➜ &b%{mute.temps.%player%}% &e &b%{mute.raison.%player%}% &epar &b%{ban.muteur.%player%}%" from {mutelist::*}
+			set {mute.%player%} to false
+			clear {mute.muteur.%player%}
+			clear {mute.raison.%player%}
+			clear {mute.temp.%player%}
+			clear {mute.date.%player%}
+			clear {mute.temps.%player%}
+		if difference between now and {mute.date.%player%} is smaller than {mute.temp.%player%}:
+			cancel event
+			send "&fVous êtes mute ! " to player
+			send "&ePendant ➜ %{mute.temps.%player%}%" to player
+			send "&6Raison ➜ %{mute.raison.%player%}%" to player
+			send "&fAuteur ➜ &a%{mute.muteur.%player%}%" to player
+
+
+on join:
+	if {avertissement.Aimbot.%player%} isn't set:
+		set {avertissement.Aimbot.%player%} to 0
+	if {avertissement.Anti-Knockback.%player%} isn't set:
+		set {avertissement.Anti-KnockBack.%player%} to 0
+	if {avertissement.AutoClick.%player%} isn't set:
+		set {avertissement.AutoClick.%player%} to 0
+	if {avertissement.Bow-Aimbot.%player%} isn't set:
+		set {avertissement.Bow-Aimbot.%player%} to 0
+	if {avertissement.SpeedHack.%player%} isn't set:
+		set {avertissement.SpeedHack.%player%} to 0
+	if {avertissement.Fly.%player%} isn't set:
+		set {avertissement.Fly.%player%} to 0
+	if {avertissement.ForceField.%player%} isn't set:
+		set {avertissement.ForceField.%player%} to 0
+	if {avertissement.Kill-Aura.%player%} isn't set:
+		set {avertissement.Kill-Aura.%player%} to 0
+	if {avertissement.NoFall.%player%} isn't set:
+		set {avertissement.NoFall.%player%} to 0
+	if {avertissement.Nuker.%player%} isn't set:
+		set {avertissement.Nuker.%player%} to 0
+	if {avertissement.FastBow.%player%} isn't set:
+		set {avertissement.FastBow.%player%} to 0
+	if {avertissement.VanillaTP.%player%} isn't set:
+		set {avertissement.VanillaTP.%player%} to 0
+	if {avertissement.X-Ray.%player%} isn't set:
+		set {avertissement.X-Ray.%player%} to 0
+	if {avertissement.Spam.%player%} isn't set:
+		set {avertissement.Spam.%player%} to 0
+	if {avertissement.Insulte%player%} isn't set:
+		set {avertissement.Insulte.%player%} to 0
+	if {avertissement.Pub.%player%} isn't set:
+		set {avertissement.Pub.%player%} to 0
+	if {avertissement.Menace.%player%} isn't set:
+		set {avertissement.Menace.%player%} to 0
+
+on join:
+	if {first.join.%player%} is not set:
+		set {first.join.%player%} to now
+
+on join:
+	set {ip.%player%} to IP of player
+	if {ip.memory.%player%} is not set:
+		add "&a%player% ➜ %{ip.%player%}%" to {iplist::*}
+		set {ip.memory.%player%} to true
+
+on script load:
+	if {time.aimbot} is not set:
+		broadcast "&a&l[&aAvertissement&a&l] &aLe temps du tempban pour Aimbot n'est pas set ! Merci de le faire pour régler les problèmes grâce à la commande /settime !"
+	if {time.antikb} is not set:
+		broadcast "&a&l[&aAvertissement&a&l] &aLe temps du tempban pour Anti-KnockBack n'est pas set ! Merci de le faire pour régler les problèmes grâce à la commande /settime !"
+	if {time.autoclick} is not set:
+		broadcast "&a&l[&aAvertissement&a&l] &aLe temps du tempban pour AutoClick n'est pas set ! Merci de le faire pour régler les problèmes grâce à la commande /settime !"
+	if {time.bowaimbot} is not set:
+		broadcast "&a&l[&aAvertissement&a&l] &aLe temps du tempban pour BowAimbot n'est pas set ! Merci de le faire pour régler les problèmes grâce à la commande /settime !"
+	if {time.speedhack} is not set:
+		broadcast "&a&l[&aAvertissement&a&l] &aLe temps du tempban pour SpeedHack n'est pas set ! Merci de le faire pour régler les problèmes grâce à la commande /settime !"
+	if {time.fly} is not set:
+		broadcast "&a&l[&aAvertissement&a&l] &aLe temps du tempban pour Fly n'est pas set ! Merci de le faire pour régler les problèmes grâce à la commande /settime !"
+	if {time.forcefield} is not set:
+		broadcast "&a&l[&aAvertissement&a&l] &aLe temps du tempban pour ForceField n'est pas set ! Merci de le faire pour régler les problèmes grâce à la commande /settime !"
+	if {time.killaura} is not set:
+		broadcast "&a&l[&aAvertissement&a&l] &aLe temps du tempban pour Kill-Aura n'est pas set ! Merci de le faire pour régler les problèmes grâce à la commande /settime !"
+	if {time.nofall} is not set:
+		broadcast "&a&l[&aAvertissement&a&l] &aLe temps du tempban pour NoFall n'est pas set ! Merci de le faire pour régler les problèmes grâce à la commande /settime !"
+	if {time.nuker} is not set:
+		broadcast "&a&l[&aAvertissement&a&l] &aLe temps du tempban pour Nuker n'est pas set ! Merci de le faire pour régler les problèmes grâce à la commande /settime !"
+	if {time.fastbow} is not set:
+		broadcast "&a&l[&aAvertissement&a&l] &aLe temps du tempban pour FastBow n'est pas set ! Merci de le faire pour régler les problèmes grâce à la commande /settime !"
+	if {time.vanillatp} is not set:
+		broadcast "&a&l[&aAvertissement&a&l] &aLe temps du tempban pour VanillaTP n'est pas set ! Merci de le faire pour régler les problèmes grâce à la commande /settime !"
+	if {time.xray} is not set:
+		broadcast "&a&l[&aAvertissement&a&l] &aLe temps du tempban pour Xray n'est pas set ! Merci de le faire pour régler les problèmes grâce à la commande /settime !"
+	if {jsonmsg} is not set:
+		broadcast "&a&l[&aAvertissement&a&l] &aLes messages de confirmation ne sont pas set ! Merci de le faire pour régler les problèmes grâce à la commande /configjsonapi !"
+	else:
+		broadcast "{@prefix} &aAucune erreur n'a été détecté !"
+
+on script load:
+	if text from "https://pastebin.com/raw/5dyZdq2K" is not "{@actuelversion}":
+		broadcast "{@prefixupdate} &aMise à jour du Skript De Modération !"
+		download from "https://pastebin.com/raw/sUwu3tRW" to "plugins/Skript/scripts/Moderation.sk"
+		wait 5 ticks
+		execute console command "/sk reload Moderation"
+		broadcast "{@prefixupdate} &aMise à jour Terminée!"
+	if {cpsmax} is not set:
+		set {cpsmax} to 15
+	if {protectstaff} is not set:
+		set {protectstaff} to false
+
+on join:
+	set {vanish.%player%} to false
+	set {mod.%player%} to false
+	set {god.%player%} to false
+	set {fly.%player%} to false
+
+on drop:
+	if {mod.%player%} is true:
+		cancel event
+		send "{@prefix} &aTu es en Mode Modération !" to player
+
+on pickup:
+	if {mod.%player%} is true:
+		cancel event
+
+on rightclick with iron hoe:
+	if {mod.%player%} is true:
+		if name of player's tool is "&aVanish":
+			make player execute command "/vanish"
+
+on rightclick with blaze rod:
+	if {mod.%player%} is true:
+		if name of player's tool is "&aRandomTp":
+			make player execute command "/randomtp"
+
+on rightclick with bone:
+	if {mod.%player%} is true:
+		if name of player's tool is "&aKill":
+			make player execute command "/kill %entity's target%"
+
+on damage:
+	if {god.%victim%} is true:
+		cancel event
+	if {mod.%victim%} is true:
+		cancel event
+		
+on item damage:
+	if {mod.%player%} is true:
+		cancel event
+
+on damage:
+	if attacker is a player:
+		if victim is a player:
+			if {mod.%victim%} is true:
+				send ""
+				send "{@prefix} &a%attacker% a essayé de vous attaquer"
+				send ""
+
+on hunger meter change:
+	if {god.%player%} is true:
+		cancel event
+	if {mod.%player%} is true:
+		cancel event
+
+on rightclick with feather:
+	if {mod.%player%}:
+		if name of player's tool is "&aFly":
+			make player execute command "/fly"
+
+on inventory click:
+	if {mod.%player%} is true:
+		cancel event
+		send "{@prefix} &cTu es en Mode Modération"
+
+on join:
+	if {language.%player%} is not set:
+		set {language.%player%} to true
+		set {language.fr.%player%} to true
+		set {language.en.%player%} to false
+
+on join:
+	if {maxclick.%player%} is not set:
+		set {maxclick.%player%} to 0
+	if {clickalert.%player%} is not set:
+		set {clickalert.%player%} to 0
+	if {kill.%player%} is not set:
+		set {kill.%player%} to 0
+	if {mort.%player%} is not set:
+		set {mort.%player%} to 0
+		
+on leftclick:
+    if {clickverif.%player%} is true:
+        add 1 to {clicks.gauche.%player%}
+		
+on rightclick:
+    if {clickverif.%player%} is true:
+        add 1 to {clicks.droit.%player%}
+		
+on death:
+	if victim is player:
+		if attacker is player:
+			add 1 to {kill.%attacker%}
+			add 1 to {mort.%victim%}
+			set {ratio.%victim%} to {kill:%victim%} / {mort:%victim%}
+			set {ratio.%attacker%} to {kill:%attacker%} / {mort:%attacker%}
+		else:
+			add 1 to {mort.%victim%}
+			set {ratio.%victim%} to {kill:%victim%} / {mort:%victim%}
+			
+on command:
+	if {freeze.%player%} is true:	
+		cancel event
+		send "{@prefixfreeze} &bTu es freeze !" to player
+
+on damage:
+	if {freeze.%victim%} is true:
+		if attacker is player:
+			cancel event
+			send "{@prefixfreeze} &bLe joueur %victim% est freeze !" to attacker
+		else:
+			cancel event
+	if {freeze.%attacker%} is true:
+		if victim is player:
+			cancel event
+			send "{@prefixfreeze} &bTu es freeze (Tu ne prends pas de dégats) !"
+		else:
+			cancel event
+			send "{@prefixfreeze} &bTu es freeze (Tu ne prends pas de dégats) !"
+			
+on vehicle enter:
+	if {freeze.%player%} is true:
+		cancel event
+		send "{@prefixfreeze} &bTu es freeze !"
+		
+on any move:
+	if {freeze.%player%} is true:
+		cancel event
+		
+on teleport:
+	if {freeze.%player%} is true:
+		cancel event
+		
+on drop:
+	if {freeze.%player%} is true:	
+		cancel event
+		
+on pick up:
+	if {freeze.%player%} is true:
+		cancel event
+		
+on inventory click:
+	if {freeze.%player%} is true:
+		cancel event
+		
+on join:
+	if {maxclick.%player%} is not set:
+		set {maxclick.%player%} to 0

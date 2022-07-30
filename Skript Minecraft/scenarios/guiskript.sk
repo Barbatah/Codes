@@ -1,0 +1,30 @@
+command /scenariogui:
+	permission: skript.op
+	permission message: &4Vous n'avez pas la permission!
+	trigger:
+		open chest with 3 rows named "&0Scénario Skript" to player
+
+		format slot 0 of player with blue stained glass pane named " " to be unstealable
+		format slot 1 of player with blue stained glass pane named " " to be unstealable
+		format slot 2 of player with blue stained glass pane named " " to be unstealable
+		format slot 3 of player with blue stained glass pane named " " to be unstealable
+		format slot 4 of player with blue stained glass pane named " " to be unstealable
+		format slot 5 of player with blue stained glass pane named " " to be unstealable
+		format slot 6 of player with blue stained glass pane named " " to be unstealable
+		format slot 7 of player with blue stained glass pane named " " to be unstealable
+		format slot 8 of player with blue stained glass pane named " " to be unstealable
+		format slot 9 of player with blue stained glass pane named " " to be unstealable
+		format slot 10 of player with chest named "&fBackPack" to close then run [execute player command "/backpackgui"]
+		format slot 17 of player with blue stained glass pane named " " to be unstealable
+		format slot 18 of player with blue stained glass pane named " " to be unstealable
+		format slot 19 of player with blue stained glass pane named " " to be unstealable
+		format slot 20 of player with blue stained glass pane named " " to be unstealable
+		format slot 21 of player with blue stained glass pane named " " to be unstealable
+		format slot 22 of player with blue stained glass pane named " " to be unstealable
+		format slot 23 of player with blue stained glass pane named " " to be unstealable
+		format slot 24 of player with blue stained glass pane named " " to be unstealable
+		format slot 25 of player with blue stained glass pane named " " to be unstealable
+		format slot 26 of player with blue stained glass pane named " " to be unstealable
+
+
+		

@@ -1,0 +1,11 @@
+command /listskript:
+	trigger:
+		send "&0List Skript:" to player
+		send " " to player
+		send "&eHelp_plugin" to player
+		send "&eBackpack" to player
+		send "&e3xArrows" to player
+		send "&eHores" to player
+		send "&eInfiniteEnchanter" to player
+		send "&eSlave_market" to player
+		stop

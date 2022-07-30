@@ -1,0 +1,82 @@
+options:
+	Prefix: &f&lS&d&lQ&f&lUIDG&d&lA&f&lM&d&lE
+	World: SquidGame
+
+	MsgElim: &cVous êtes éliminés.
+
+on load:
+	broadcast " "
+	broadcast "&f&lChargement du &f&lS&d&lQ&f&lUIDG&d&lA&f&lM&d&lE&f&l."
+	broadcast " "
+	wait a tick
+	broadcast "&f&oChargement terminé."
+
+command /squidgame [<text = join>] [<text>] [<number>]:
+	aliases: sq
+	trigger:
+		if arg 1 is "join":
+			if arg 2 isn't set:
+				send " " to player
+				send "  &d&l- &fVeuillez &dsigner &fle contrat pour rejoindre la &dpartie&f." to player
+				send formatted "                               <tooltip:&f&oCliquez-ici pour signer.><run command:/sq join checkk>&f&lSignez ICI<r>" to player
+				send " " to playert
+			if arg 2 is "checkk":
+				if metadata value "play" of player isn't set:
+					set {_map} to 1
+					if {sg.%{_map}%.statut} is "waiting":
+						set metadata value "play" of player to true
+						set metadata value "statut" of player to "ingame"
+						set metadata value "map" of player to 1
+						set {_map} to 1
+						add player to {sg.%{_map}%.players::*}
+						teleport player at {sg.%{_map}%.dortoir}
+						clear player's inventory
+
+						equip player with an leather chestplate
+						equip player with an leather leggings
+						equip player with an leather boots
+
+						set player's gamemode to adventure
+						set player's max health to 1
+						send "&7Vous venez de rejoindre &f&lS&d&lQ&f&lUIDG&d&lA&f&lM&d&lE."
+						send title "&f&lS&d&lQ&f&lUIDG&d&lA&f&lM&d&lE" with subtitle "Bienvenue." to player for 3 seconds
+
+						set {sg.%{_map}%.statut} to "starting"
+						loop all integers between 15 and 1:
+							set {_times} to "%loop-integer%"
+							send action bar "&fDébut de la partie dans &e%{_times}% seconde(s) &f!" to {sg.%{_map}%.players::*}
+							set the level of {sg.%{_map}%.players::*} to {_times}
+							if size of {sg.%{_map}%.players::*} = 0:
+								send "&cIl n'y a plus assez de joueur !" to {sg.%{_map}%.players::*}
+
+								set {sg.%{_map}%.statut} to "waiting"
+								exit loop
+								stop
+							if loop-integer is equal to 60 or 30 or 20 or 10:
+								play sound "BLOCK_NOTE_BASS" with volume 10 and pitch 1 at {sg.%{_map}%.players::*} for {sg.%{_map}%.players::*}
+								send title "BLOCK_NOTE_BASS" with subtitle "&fdans &e%{_times}% secondes" to {sg.%{_map}%.players::*} for a second
+							if loop-integer is equal to 5 or 4 or 3 or 2 or 1:
+								if loop-integer is equal to 5:
+									apply potion of nausea 255 to {%sg.%{_map}%.players::*} for 7 seconds
+									set {_times} to "&45"
+								if loop-integer is equal to 4:
+									set {_times} to "&c4"
+									play sound "block.portal.trigger" with volume 10 and pitch 1 at {sg.%{_map}%.players::*} for {sg.%{_map}%.players::*}
+								if loop-integer is equal to 3:
+									set {_times} to "&63"
+									apply blindness without any particles to {sg.%{_map}%.players::*} for 6 seconds
+								if loop-integer is equal to 2:
+									set {_times} to "&e2"
+								if loop-integer is equal to 1:
+									set {_times} to "&a1"
+								play sound "BLOCK_NOTE_PLING" with volume 10 and pitch 1 at {sg.%{_map}%.players::*} for {sg.%{_map}%.players::*}
+								send action bar "&fDébut de la partie dans %{_times}% seconde(s) &f!" to {sg.%{_map}%.players::*}
+								send title "&fTéléportation" with subtitle "&fdans %{_times}% seconde(s)" to {sg.%{_map}%.players::*} for a second
+							wait a second
+
+						Epreuve1({_map})
+					else:
+						send "&cUne partie est déjà en cours."
+				else:
+					send "&7Vous êtes déjà considéré comme en jeu..."
+					send "&cCliquez ici &7pour quittez votre partie."

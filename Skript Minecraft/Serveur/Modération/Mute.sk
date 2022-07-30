@@ -1,0 +1,33 @@
+command /mute [<player>] [<text>]:
+	permission: mod.op
+	permission message: &4Tu n'as pas la permission de Kick
+	executable by: console and player
+	trigger:
+		if arg 1 isn't set:
+			send "[Mute] &7Séléctionne un Joueur" to player
+			stop
+		else:
+			if arg 2 isn't set:
+				send "[Mute] &7Pour quelle Raison veut-tu mute le joueur &e%arg 1% &7?" to player
+				stop
+			else:
+				if {mute.%arg 1%} isn't set:
+					broadcast "&e%arg 1% &7a été mute pour &c%arg 2%"
+					send "&7Vous avez été Mute pour &c%arg 2%" to arg 1
+					set {mute.%arg 1%} to true
+				else:
+					send "&7Le joueur &e%arg 1% &7n'est plus mute" to player
+					send "&7Tu n'est plus mute" to arg 1
+					delete {mute.%arg 1%}
+
+on chat:
+	if {mute.%player%} is true:
+		send "&7Tu ne peut pas parler car tu es mute!" to player
+		cancel event
+	else:
+		if {grade.fondateur%player%} is true:
+			send "&aFondateur:%message%" to player
+			cancel event
+		if {grade.admin.%player%} is true:
+			send "&cAdmin: %message%" to player
+			cancel event

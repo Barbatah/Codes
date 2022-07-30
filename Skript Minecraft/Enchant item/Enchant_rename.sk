@@ -1,0 +1,37 @@
+options:
+    ExempleCmd: &f/enchant &o<enchantement> <niveau> <nom de l'item>
+
+    ErreurArg1: &cIl te manque le l'enchantement...
+    ExempleEnchant1: &cExemple: &f/enchant &osharpness
+    
+    ErreurArg2: &cIl te manque le niveau de l'enchantement...
+    ExempleEnchant2: &cExemple: &f/enchant &osharpness 8
+    
+    ErreurArg3: &cIl te manque le nom de l'item...
+    ExempleEnchant3: &cExemple: &f/enchant &osharpness 8 Excalibur
+    
+    Valider: &aCertifié par Daquanze ! :')
+ 
+command /enchant [<text>] [<number>] [<text>]:
+    trigger:
+        if arg 1 is set:
+            if arg 2 is set:
+                if arg 3 is set:
+                    set {_enchantlvl} to "%arg 1% %arg 2%" parsed as enchantment type
+                    set {_nom} to "%arg 3%"
+                    enchant the player's tool with {_enchantlvl}
+                    set name of player's tool to colored "%{_nom}%"
+                    send "{@Valider}" to player
+                else:
+                    send "{@ErreurArg3}" to player
+                    send "{@ExempleEnchant3}" to player
+                
+            else:
+                send "{@ErreurArg2}" to player
+                send "{@ExempleEnchant2}" to player
+            
+        else:
+            send "{@ExempleCmd}" to player
+            send " " to player
+            send "{@ErreurArg1}" to player
+            send "{@ExempleEnchant1}" to player

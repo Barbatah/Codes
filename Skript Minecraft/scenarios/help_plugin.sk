@@ -1,0 +1,52 @@
+command /plugin_help [<text>]:
+	description: Besoin d'aide pour les scenarios uhc.
+	trigger:
+		if arg 1 isn't set:
+			send "&c/plugin_help 3Arrows | Tirer trois flèches en même temps" to player
+			send "&c-----------------------------------------------------" to player
+			send "&c/plugin_help Backpack | Coffre avec notre stuff a notre mort" to player
+			send "&c-----------------------------------------------------" to player
+			send "&c/plugin_help Slave_market | Scénarios slave market" to player
+			send "&c-----------------------------------------------------" to player
+			send "&c/plugin_help Infiniteenchanter | Enchantement infini" to player
+			send "&c-----------------------------------------------------" to player
+			send "&c/plugin_help Hores | Augmener le pourcentage de drop de minerai" to player
+			stop
+		else:
+			if arg-1 is "3arrows":
+				send "&l3xArrows"
+				send "&a/plugin_help 3Arrows &l- <gold>Centre d'aide 3Arrows" to player
+				send "&a/3arrows enable &l- <gold>Activer 3Arrows" to player
+				send "&a/3arrows disable &l- <gold>Désactiver 3Arrows" to player
+				stop
+
+			if arg-1 is "Backpack":
+				send "&lBackpack"
+				send "&a/plugin_help Backpack &l- <gold>Centre d'aide Backpack" to player
+				send "&a/backpacks on/enable/start &l- <gold>Activer Backpack" to player
+				send "&a/backpacks off/disable/stop &l- <gold>Désactiver Backpack" to player
+				stop
+
+			if arg-1 is "slave_market":
+				send "&lSlave Market"
+				send "&a/plugin_help Slave_market &l- <gold>Centre d'aide Slave_market" to player
+				send "&a/slavereset &l- <gold>Réinitialiser les variables." to player
+				send "&a/slaveteams &l- <gold>Créer les équipes." to player
+				send "&a/slaveowner [add/remove/reset/list] [Player name] [Team Number] [Amount of diamonds] &l- <gold>Cette volonté add/remove/reset/list tout les owners. Donne 30 diamants et téléporte à leur emplacement." to player
+				send "&a/startbid [playername] [seconds] &l- <gold>Commencer les enchères du joueur." to player
+				send "&a/bid [amount of diamonds to bid] &l- <gold>Pour enchérir." to player
+				stop
+
+			if arg-1 is "infiniteenchanter":
+				send "&lInfinite enchanter"
+				send "&a/plugin_help Infiniteenchanter &l- <gold>Centre d'aide Infiniteenchanter" to player
+				send "&a/ie start &l- <gold>Démarrer Infinite Enchanter" to player
+				send "&a/ie stop &l- <gold>Démarrer Infinite Enchanter" to player
+				stop
+
+			if arg-1 is "hores":
+				send "&lHores"
+				send "&a/plugin_help Hores &l- <gold>Centre d'aide Hores" to player
+				send "&a/hores enable &l- <gold>Activer hores" to player
+				send "&a/hores disable &l- <gold>Désactiver hores" to player
+				stop

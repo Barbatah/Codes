@@ -1,0 +1,7 @@
+command /admin:
+	usage: &8[&4AdminMod&8] : Fait /admin pour avoir les outils d'admin !
+	aliases: administrateur
+	permission: admin.use
+	permission message: &4Vous ne pouvez pas utilisé cette commande !
+	trigger:
+		open chest with 6 rows named "&4AdminTool" to player

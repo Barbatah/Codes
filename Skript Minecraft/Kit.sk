@@ -1,0 +1,258 @@
+on join:
+	set slot 0 of player to chest named "&c Vos kits"
+
+command /kitstart:
+	usage: /kitstart
+	trigger:
+		send "&6KIT : &c Vous avez recu le kit start "
+		equip player with chain helmet named "&cKit Start"
+		equip player with chain chestplate named "&cKit Start"
+		equip player with chain leggings named "&cKit Start"
+		equip player with chain boots named "&cKit Start"
+		give iron pickaxe named "&cKit Start" to player
+		give iron axe named "&cKit Start" to player
+		give iron shovel named "&cKit Start" to player
+		give 32 breads named "&cKit Start" to player
+		give 32 arrows named "&cKit Start" to player
+		give 1 bow named "&cKit Start" to player
+
+on command "/kitstart":
+	if difference between {timer::%player%} and now is less than 30 minutes:
+		cancel event
+		send "&c Vous devez patienter pour l'obtention de votre kit. Vous pouvez disposer de ce kit &2 toutes les 30 minutes" to player
+	else:
+		set {timer::%player%} to now
+
+command /kitguerrier:
+	permission: kit.guerrier
+	permission message: &c Vous n'avez pas la permission pour avoir accès à ce kit !
+	usage: /kitguerrier
+	trigger:
+		send "&6 KIT : &c Vous avez recu le kit guerrier"
+		equip player with iron helmet of protection 1 named "&c Kit Guerrier"
+		equip player with iron chestplate of protection 1 named "&c Kit Guerrier"
+		equip player with iron leggings of protection 1 named "&c Kit Guerrier"
+		equip player with iron boots of protection 1 named "&c Kit Guerrier"
+		give 1 iron sword of protection 2 and unbreaking 2 named "&c Kit Guerrier" to player
+		give 45 breads to player
+		give 1 diamond pickaxe to player
+		
+on command "/kitguerrier":
+	if difference between {timer::%player%} and now is less than 1 hour:
+		cancel event
+		send "&c Vous devez patienter pour l'obtention de votre kit. Vous pouvez disposer de ce kit &2 toutes les heures" to player
+	else:
+		set {timer::%player%} to now
+		
+command /kittank:
+	permission: kit.tank
+	permission message: &c Vous n'avez pas la permission pour avoir accès à ce kit !
+	usage : /kittank
+	trigger:
+		send "&6 KIT : &c Vous avez recu le kit tank"
+		give diamond sword of sharpness 4 named "&cKit TANK" to player
+		equip player with diamond helmet of protection 4 named "&cKit TANK"
+		equip player with diamond chestplate of protection 4 named "&cKit TANK"
+		equip player with diamond leggings of protection 4 named "&cKit TANK"
+		equip player with diamond boots of protection 4 named "&cKit TANK"
+		give 2 golden apple named "&6 Pomme cheat" to player
+		
+on command "/kittank":
+	if difference between {timer::%player%} and now is less than 2 hours:
+		cancel event
+		send "&c Vous devez patienter pour l'obtention de votre kit. Vous pouvez disposer de ce kit &2 toutes les 2 heures" to player
+	else:
+		set {timer::%player%} to now
+		
+command /kitvendeur:
+	permission: kit.vendeur
+	permission message : &c Vous n'avez pas la permission pour avois accès à ce kit !
+	usage: /kitvendeur
+	trigger:
+		send "&6 KIT : &c Vous avez recu le kit vendeur"
+		give 2 villager spawn egg named "&cKit Vendeur" to player
+		give 64 emeralds named "&cKit Vendeur" to player
+		give 32 Bottle o' enchanting named "&cKit Vendeur" to player
+	
+on command "/kitvendeur":
+	if difference between {timer::%player%} and now is less than 90 minutes:
+		cancel event
+		send "&c Vous devez patienter pour l'obtention de votre kit. Vous pouvez disposer de ce kit &2 toutes les 1 heure et demi" to player
+	else:
+		set {timer::%player%} to now
+		
+command /kitconstructeur:
+	permission: kit.constructeur
+	permission message: &c Vous n'avez pas la permission pour avois accès à ce kit !
+	usage: /kitconstructeur
+	trigger:
+		send "&6 KIT : &c Vous avez recu le kit constructeur"
+		give diamond sword of efficiency 5 and unbreaking 3 named "&cKit constructeur" to player
+		give 160 obsidian named "&cKit constructeur" to player
+		give 2 lava bucket named "&cKit constructeur" to player
+		give 1 water bucket named "&cKit constructeur" to player
+		
+on command "/kitconstructeur":
+	if difference between {timer::%player%} and now is less than 90 minutes:
+		cancel event
+		send "&c Vous devez patienter pour l'obtention de votre kit. Vous pouvez disposer de ce kit &2 toutes les 1 heure et demi" to player
+	else:
+		set {timer::%player%} to now
+		
+command /kitinvocateur:
+	permission: kit.invocateur
+	permission message: &c Vous n'avez pas la permission pour avois accès à ce kit !
+	usage: /kitinvocateur
+	trigger:
+		send "&6 KIT : &c Vous avez recu le kit invocateur"
+		give 8 horse spawn egg named "&cKit Invocateur" to player
+		give 8 wolf spawn egg named "&cKit Invocateur" to player
+		give 8 ghast spawn egg named "&cKit Invocateur" to player
+		give 8 blaze spawn egg named "&cKit Invocateur" to player
+		give 8 spawn egg:68 named "&cKit Invocateur" to player
+		give 8 witch spawn egg named "&cKit Invocateur" to player
+		
+on command "/kitinvocateur":
+	if difference between {timer::%player%} and now is less than 150 minutes:
+		cancel event
+		send "&c Vous devez patienter pour l'obtention de votre kit. Vous pouvez disposer de ce kit &2 toutes les 2 heures et demi" to player
+	else:
+		set {timer::%player%} to now
+		
+command /kitdestructeur:
+	permission: kit.destructeur
+	permission message: &c Vous n'avez pas la permission pour avois accès à ce kit !
+	usage: /kitdestructeur
+	trigger:
+		send "&6 KIT : &c Vous avez recu le kit destructeur"
+		equip player with chain helmet of blast protection 4 and unbreaking 1 named "&cKit Destructeur"
+		equip player with chain chestplate of blast protection 4 and unbreaking 1 named "&cKit Destructeur"
+		equip player with chain leggings of blast protection 4 and unbreaking 1 named "&cKit Destructeur"
+		equip player with chain boots of blast protection 4 and unbreaking 1 named "&cKit Destructeur"
+		give bow of flame 1 and unbreaking 1 named "&cKit Destructeur" to player
+		give flint and steel named "&cKit Destructeur" to player
+		give splash potion of fire resistance named "&cKit Destructeur" to player
+		give 16 arrows named "&cKit Destructeur" to player
+		give 48 TNT named "&cKit Destructeur" to player
+		
+on command "/kitdestructeur":
+	if difference between {timer::%player%} and now is less than 3 hours:
+		cancel event
+		send "&c &c Vous devez patienter pour l'obtention de votre kit. Vous pouvez disposer de ce kit &2 toutes les 2 heures" to player
+	else:
+		set {timer::%player%} to now
+		
+command /kitlegende:
+	permission: kit.legende
+	trigger:
+		send "&6KIT : &c Vous avez reçu le kit &6 legende"
+		equip player with iron helmet of sharpness 3 and unbreaking 1 named "&cKit Legende"
+		equip player with iron chestplate of sharpness 3 and unbreaking 1 named "&cKit Legende"
+		equip player with iron leggings of sharpness 3 and unbreaking 1 named "&cKit Legende"
+		equip player with iron boots of sharpness 3 and unbreaking 1 named "&cKit Legende"
+		give iron sword of sharpness 3 and unbreaking 1 named "&cKit Legende" to player
+		give 32 steaks named "&cKit Legende" to player 
+		give 4 golden apple named "&cKit Legende" to player
+
+		
+on command "/kitlegende":
+	if difference between {timer::%player%} and now is less than 12 hours:
+		cancel event
+		send "&c Vous devez patienter pour l'obtention de votre kit. Vous pouvez disposer de ce kit &2 toutes les 12 heures" to player
+	else:
+		set {timer::%player%} to now
+
+
+command /kitlegende+:
+	permission: kit.legende+
+	trigger:
+		send "&6KIT : &c Vous avez reçu le kit &6 legende+"
+		equip player with iron helmet of sharpness 3 and unbreaking 1 named "&cKit Legende+"
+		equip player with iron chestplate of sharpness 3 and unbreaking 1 named "&cKit Legende+"
+		equip player with iron leggings of sharpness 3 and unbreaking 1 named "&cKit Legende+"
+		equip player with iron boots of sharpness 3 and unbreaking 1 named "&cKit Legende+"
+		give iron sword of sharpness 3 and unbreaking 1 named "&cKit Legende+" to player
+		give 48 steaks named "&cKit Legende+" to player 
+		give 1 bow of power 3 named "&cKit Legende+" to player
+		give 32 arrows named "&cKit Legende+" to player
+		give 16 obsidian named "&cKit Legende+" to player
+		
+on command "/kitlegende+":
+	if difference between {timer::%player%} and now is less than 24 hours:
+		cancel event
+		send "&c Vous devez patienter pour l'obtention de votre kit. Vous pouvez disposer de ce kit &2 toutes les 24 heures" to player
+	else:
+		set {timer::%player%} to now
+		
+command /kithelp:
+	trigger:
+		message "&c-=========================HELP=====================================-"
+		message "&6 /chestkit - &c Obtenir le coffre permettant d'acceder aux kits"
+		message "&6 /kithelp - &c Acceder à l'aide d'utilisation"
+		message "&6 /kitauteur - Acceder aux informations de l'auteur de ce skript"
+		message "&c-==================================================================-"
+		message "&9-==========================PERMISSIONS=============================-"
+		message "&6 kit.guerrier - &c Kit guerrier"
+		message "&6 kit.tank - &c Kit tank"
+		message "&6 kit.vendeur - &c Kit vendeur"
+		message "&6 kit.constructeur - &c Kit constructeur"
+		message "&6 kit.destructeur - &c Kit destructeur"
+		message "&6 kit.invocateur - &c Kit invocateur"
+		message "&6 kit.legende - &c Kit legende"
+		message "&6 kit.legende+ - &c Kit legende+"
+		message "&9-==================================================================-"
+		
+command /kitlist:
+	trigger:
+		message "&9-==================================================================-"
+		message "&6 Kit Start - &c Disponible toutes les 30 minutes"
+		message "&6 Kit Guerrier - &c Disponible toutes les heures"
+		message "&6 Kit Tank - &c Disponible toutes les 2 heures"
+		message "&6 Kit Vendeur - &c Disponible toutes les 90 minutes"
+		message "&6 Kit Constructeur - &c Disponible toutes les les 90 minutes"
+		message "&6 Kit Invocateur - &c Disponible toutes les 2 heures et demi"
+		message "&6 Kit Destructeur - &c Disponible toutes les 3 heures"
+		message "&6 Kit Legende - &c Disponible toutes les 12 heures"
+		message "&6 Kit Legende + - &c Disponible toutes les 24 heures"
+		message "&9-==================================================================-"
+		
+command /kitauteur:
+	trigger:
+		message "&4[DROIT D'AUTEUR] &c IL EST STRICTEMENT INTERDIT DE VENDRE OU S'APPROPRIER CE SCRIPT"
+		message "&2[AUTEUR]: &cXeinel"
+		message "&2[MAIL] : &c script.minecraft@gmail.com"
+		message "&2[SITE] : &c https://script-minecraft.jimdo.com/"
+		message "&2[DISCORD] : &c Invitation : FX5sQPr"
+		message "&3[TWITTER] : &c https://twitter.com/ScriptsMC"
+		message "&4[INSTAGRAM] : &c ScriptMinecraft"
+
+on command "/kitauteurs":
+		send "&2 [REMERCIEMENTS] Merci d'avoir accepté les conditions générales d'utilisations ! Bonne utilisation" to player
+
+command /chestkit:
+	trigger:
+		set slot 0 of player to chest named "&c Vos kits"
+		
+		
+on rightclick with a chest:
+	if name of tool is "&c Vos kits":
+		wait 1 ticks
+		open chest with 3 rows named "&8>>&6Kits&8<<" to player
+		wait 1 ticks
+		format slot 0 of player with chain helmet named "&8> &cKit Start&8 <" with lore "&a Clique pour obtenir ce kit" to run [make player execute command "/kitstart"]
+		format slot 2 of player with diamond sword named "&8> &cKit Guerrier&8 <" with lore "&a Clique pour obtenir ce kit" to run [make player execute command "/kitguerrier"]
+		format slot 4 of player with diamond chestplate named "&8> &c Kit Tank &8<" with lore "&a Clique pour obtenir ce kit" to run [make player execute command "/kittank"]
+		format slot 6 of player with emerald named "&8 >&c Kit Vendeur&8 <" with lore "&a Clique pour obtenir ce kit" to run [make player execute command "/kitvendeur"]
+		format slot 8 of player with obsidian named "&8 > &cKit Constructeur &8<" with lore "&a Clique pour obtenir ce kit" to run [make player execute command "/kitconstructeur"]
+		format slot 10 of player with egg named "&8> &cKit Invocateur &8<" with lore "&a Clique pour obtenir ce kit" to run [make player execute command "/kitinvocateur"]
+		format slot 12 of player with bow named "&8 > &cKit Destructeur &8<" with lore "&a Clique pour obtenir ce kit" to run [make player execute command "/kitdestructeur"]
+		format slot 20 of player with paper named "&8 &l> &c &lKit Help&8 &l<" with lore "&a Besoin d'aide ? Clique ici" to run [make player execute command "/kithelp"]
+		format slot 22 of player with player head named "&8 &l> &c &l Auteur &8 &l<" with lore "&a Auteur : &cXeinel" to run [make player execute command "/kitauteur"]
+		format slot 14 of player with golden apple named "&8 > &c Kit Legende &8<" with lore "&a Clique ici pour obtenir ce kit" to run [make player execute command "/kitlegende"]
+		format slot 24 of player with gold ingot named "&8 &l> &c &l Kit &8 &l<" with lore "&a Temps pour l'obtention des kits" to run [make player execute command "/kitlist"]
+		format slot 16 of player with anvil named "&8 > &c Kit Legende +&8<" with lore "&a Clique ici pour obtenir ce kit" to run [make player execute command "/kitlegende+"]
+
+every 15 minutes:
+	broadcast "&6[KIT] - &c Attention, si votre inventaire est full, le kit ne sera pas drop, par conséquent vous devrez patienter à nouveau ! De plus soyez vigilent à ce que vous soyez pas vêtu d'un stuff car celui-ci sera automatiquement remplacé par celui du kit"
+	
+

@@ -1,0 +1,151 @@
+options:
+	pre1: &7[&6UHC&7]&a
+	pre2: &7[&6SlaveMarket&7]&a
+
+command /slavereset [<text>]:
+	permission: skript.op
+	trigger:
+		if arg 1 is not set:
+			message "{@pre1} utilisation &6&L/slavereset confirm &apour réinitialiser les variables du slave market." to the player
+		if arg 1 is "confirm":
+			delete {bidProgressing}	
+			delete {traders}
+			delete {traders::*}
+			delete {biggestBid}
+			delete {bidWinner}
+			delete {bidTime}
+			command "/team reset"
+ 
+command /slaveteams [<text>]:
+	permission: skript.op
+	trigger:
+		if arg 1 is not set:
+			message "{@pre1} utilisation &6&L/slaveteams confirm &apour créer toutes les teams." to the player
+		if arg 1 is "confirm":
+			command "/team reset"
+			command "/team create 1"
+			broadcast "&aTeam &b1&a crée!"
+			command "/team create 2"
+			broadcast "&aTeam &b2&a crée!"
+			command "/team create 3"
+			broadcast "&aTeam &b3&a crée!"
+			command "/team create 4"
+			broadcast "&aTeam &b4&a crée!"
+			command "/team create 5"
+			broadcast "&aTeam &b5&a crée!"
+			command "/team create 6"
+			broadcast "&aTeam &b6&a crée!"
+			command "/team color"
+ 
+command /slaveowner [<text>] [<player>] [<integer>] [<integer>]:
+	permission: skript.op
+	aliases: /slaver,
+	trigger:
+		if arg 1 is "add":
+			arg 2 is set
+			set {traders::%arg 2%} to "%arg 2%"
+			execute console command "team join %arg 3% %arg 2%"
+			broadcast "{@pre2} <gold>%arg 2% &aest maintenant owner!"
+			execute console command "warp team%arg 3%captain %arg-2%"
+			if arg-4 is set:
+				give arg-4 of diamonds to arg-2
+			else:
+				give 64 of diamonds to arg-2
+		else if arg 1 is "remove":
+			arg 2 is set
+			remove arg 2 from {traders::*}
+			command "team leave %arg 2%"
+			broadcast "{@pre2} <gold>%arg 2% &an'est plus owner!"
+		else if arg 1 is "reset":
+			delete {traders::*}
+			message "{@pre2} Tous les owners ont été réinitialisés" to the player	
+		else if arg 1 is "list":
+			message "{@pre2} Les owners actuels sont &f:" to the player
+			loop {traders::*}:
+				message "{@pre2} %{traders::%loop-index%}%" to the player
+		else:
+			message "{@pre1} Erreur dans la commande" to the player
+ 
+command /startbid <player> [<integer=30>]:
+	permission: skript.op
+	trigger:
+		command "warp cage %arg 1%"
+		broadcast "{@pre2} L'enchère du joueur <gold>%arg 1% <light green>est sur le point de commencer"
+		wait 1 second
+		broadcast "{@pre2} Enchère commence dans 3"	
+		wait 1 second
+		broadcast "{@pre2} Enchère commence dans 2"	
+		wait 1 second
+		broadcast "{@pre2} Enchère commence dans 1"	
+		wait 1 second
+		broadcast "{@pre2} Enchère commence sur <gold>%arg 1%!"	
+		broadcast "{@pre2} Tu as %arg 2% seconds pour faire votre enchère!"				
+		set {bidProgressing} to true
+		set {bidTime} to arg 2
+		delete {biggestBid}
+		delete {bidWinner}
+		set {biggestBid} to -1
+		while {bidTime} is greater than 0:
+			wait 1 second
+			subtract 1 from {bidTime}
+			if {bidTime} is less than 6:
+				broadcast "{@pre2} Enchère fini dans %{bidTime}%"
+		set {bidProgressing} to false
+		if {bidWinner} is set:
+			remove {biggestBid} of diamonds from {bidWinner}
+			broadcast "{@pre2} <gold>%{bidWinner}% <light green>a remporté l'enchère sur<gold>%arg 1% <light green>pour <aqua>%{biggestBid}%"
+			loop {Teams::*}:
+				loop {Team.%loop-value%::*}:
+					If "%loop-value-2%" is "%{bidWinner}%":
+						broadcast "/team join %loop-value-1% %arg 1%"
+						command "/team join %loop-value-1% %arg 1%"
+						command "/warp team%loop-value-1% %arg 1%"
+		else:
+			broadcast "{@pre2} Aucun Owners n'a enchéri sur <gold>%arg 1%"
+ 
+command /bid <integer>:
+	usage: /bid <amount>
+	trigger:
+		if {traders::%player%} is "%player%":
+			if arg 1 is greater than -1:
+				if {bidProgressing} is true:
+					if player does not have arg 1 of diamonds:
+						message "{@pre2} Vous avez misé plus de diamants que vous n'en avez" to the player
+						stop
+					if arg 1 is greater than {biggestBid}:
+						set {biggestBid} to arg 1
+						set {bidWinner} to the player
+					else:
+						stop
+						message "{@pre1} Les enchères doivent être supérieures à l'enchère précédente."
+					if {bidTime} is less than 5:
+						add 5 to {bidTime}
+					broadcast "{@pre2} <gold>%player% <light green>offre <aqua>%arg 1%" 
+				else: 
+					message "{@pre2} Il n'y a pas d'enchères sur les slaves en ce moment" to the player
+			else: 
+				message "{@pre2} Les enchères ne peuvent pas être négatives" to the player
+		else:
+			message "{@pre2} Vous n'êtes pas owner" to the player
+			message "{@pre2} Vous n'avez pas accès à cette commande" to the player
+ 
+ 
+command /slavemute:
+	permission: skript.op
+	trigger:
+		if {SlaveMute} is not set:
+			set {SlaveMute} to true
+			broadcast "&4&LTous les joueurs ont été mis en sourdine!"
+		else:
+			delete {SlaveMute}
+			broadcast "&4&LTous les joueurs ont été réactivés!"
+ 
+on chat:
+	{SlaveMute} is true
+	if {traders::%player%} is set:
+		stop
+	else if player has permission "skript.op":
+		stop
+	else:
+		cancel event
+		message "&4&LVous n'êtes pas autorisé à discuter dans cette zone!"

@@ -1,0 +1,32 @@
+options:
+	Pre: &l[InfiniteEnchanter]
+	CC: &b
+	Permission: skript.op
+	CU: /ie [start/stop/help]
+ 
+command /ie <text>:
+	permission: {@Permission}
+	trigger:
+ 
+		#Start
+		if arg-1 is "start":
+			set {ie.enabled} to true
+			message "{@Pre} {@CC} Infinite Enchanter a maintenant commencé!"
+			give 128 enchantment table to all players
+			give 128 anvil to all players
+			give 128 bookshelf to all players
+			set level of all players to 23000
+ 
+		#Stop
+		if arg-1 is "stop":
+			{ie.enabled} is true:
+				delete {ie.enabled}
+				broadcast "{@Pre} {@CC} Enchanteur infini arrêté"
+				set level of all players to 0
+				loop all players:
+					remove all enchantment table from inventory of loop-player
+					remove all anvil from inventory of loop-player
+					remove all bookshelf from inventory of loop-player
+ 
+			else:
+				message "{@Pre} {@CC} L'enchanteur infini n'est pas activé!"

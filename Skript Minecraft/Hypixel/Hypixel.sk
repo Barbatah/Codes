@@ -1,0 +1,76 @@
+function HPScoreBoard(player: player):
+    set {_playeruuid} to uuid of {_player}
+    if {_player} is in world "HP":
+        wait a tick
+        set title of {_player}'s scoreboard to "&f  &e&lHYPIXEL"
+        wait a tick
+        set line 9 of {_player}'s scoreboard to "&fRang: &7Défaut"   
+        set line 8 of {_player}'s scoreboard to "&fMystery Dust: &a0"   
+        set line 7 of {_player}'s scoreboard to "&fAchievements: &a0"   
+        set line 6 of {_player}'s scoreboard to "&fNiveau: &a9"   
+        set line 5 of {_player}'s scoreboard to "&e&l     "   
+        set line 4 of {_player}'s scoreboard to "&fLobby: &a1"   
+        set line 3 of all players's scoreboard to "&fJoueurs: &a%size of all bungeecord players%"   
+        set line 2 of {_p}'s scoreboard to "&6&l             "   
+        set line 1 of {_p}'s scoreboard to "&ewww.hypixel.net"   
+        stop
+
+options:
+    HPtabHeader: "&bYou are playing on &e&lMC.HYPIXEL.NET"
+    HPtabFooter: "&aRanks, Boosters & MORE! &c&lSTORE.HYPIXEL.NET"
+
+function HPTABLIST(p: player):
+    set {_player} to {_p}
+    set {_playeruuid} to uuid of {_player}
+    wait a tick
+    set {_player}' tab list header to {@HPtabHeader}
+    set {_player}' tab list footer to {@HPtabFooter}
+    wait 3 ticks
+    loop all players:
+        if loop-player is online:
+            set loop-player tab name to "&7%loop-player%"
+
+on command "/hp hub":
+    clear player's inventory
+    set slot 0 of player to compass named "&aMenu de Jeu &7(Clic Droit)"
+    set slot 1 of player to player's skull named "&aMon Profil &7(Clic Droit)"
+    set slot 4 of player to chest named "&aCollectibles &7(Clic Droit)"
+    set slot 7 of player to gray dye named "&fJoueurs: &aVisibles &7(Clic Droit)"
+    set slot 8 of player to nether star named "&aSélecteur de Lobby &7(Clic Droit)"
+    HPScoreBoard(player)
+    HPTABLIST(player)
+    
+on click:
+    if name of tool is "&aMenu de Jeu &7(Clic Droit)":
+        HPMenuHub(player, "Main")
+        cancel event
+    if name of tool is "&aMon Profil &7(Clic Droit)":
+        HPMenuHub(player, "Profil")
+        cancel event   
+        
+function HPMenuHub(p: player, jeu: text):
+    if {_jeu} is "Main":
+        open chest with 6 rows named "&8Menu de Jeu" to {_p}
+        wait a tick
+    
+        set slot 9 of open inventory of {_p} to bookshelf named "&aLobby Principal" with lore " " and "&7Retourner au Lobby Principal."   
+        
+        set slot 11 of open inventory of {_p} to player head with nbt "{display:{Name:""&aSkyBlock &5&lENDERMAN SLAYER""},SkullOwner:{Id:""6bd0bfce-e424-484d-a0ba-f4c442c773e4\"",Properties:{textures:[{Value:""eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMmUyY2M0MjAxNWU2Njc4ZjhmZDQ5Y2NjMDFmYmY3ODdmMWJhMmMzMmJjZjU1OWEwMTUzMzJmYzVkYjUwIn19fQ==""}]}}}" named "&aSkyBlock" with lore "&8Jeu Permanent" and " " and "&7SkyBlock est enfin arrivé sur" and "&7Hypixel! Jouez avec des amis (ou" and "&7en solo!), construisez vos îles" and "&7privées et collectez tous les objects!" and " " and "&a▶ Ciquez pour vous connecter" and "&70 en train de jouer !"   
+        set slot 12 of open inventory of {_p} to grass block named "&aHypixel SMP &b&l1.17 SUPPORTED" with lore "&8Jeu Permanent" and " " and "&7Créez votre propre serveur SMP" and "&7sur Hypixel et jouer avec vos amis." and " " and "&a▶ Ciquez pour vous connecter"
+        set slot 13 of open inventory of {_p} to red bed named "&aBedWars &d&lNEW PRACTICE MODE" with lore "&8Survie en équipe" and " " and "&7Protégez votre lit avec vos" and "&7coéquipiers et détruisez les" and "&7lits ennemis pour gagner" and " " and "&a▶ Ciquez pour vous connecter" and "&70 en train de jouer !"   
+        set slot 14 of open inventory of {_p} to ender eye named "&aSkyWars" with lore "&8Survie" and " " and "&7La fameuse version SkyWars par" and "&7Hypixel. Avec l'Ange de la Mort," and "&7le Puit des Ames et le &cMODE" and "&cINSANE &7! Jouez seul ou en" and "&7équipe." and " " and "&a▶ Ciquez pour vous connecter" and "&70 en train de jouer !"   
+        set slot 15 of open inventory of {_p} to bow named "&aMurder Mystery" with lore "&8Survie en équipe" and " " and "&71 Meurtrier, 1 Détective. Et" and "&7beaucoup d'innocents. Pourrez" and "&7vous survivrez dans ce jeu social" and "&7tendu de trahisons et de" and "&7meurtres?" and " " and "&a▶ Ciquez pour vous connecter" and "&70 en train de jouer !"   
+        set slot 16 of open inventory of {_p} to dark oak door named "&aHousing" with lore "&8Housing" and " " and "&7Customisez et construisez votre" and "&7parcelle personnelle, rencontrez" and "&7des amis, visitez les maisons" and "&7d'autres joueurs, et plus!" and " " and "&a▶ Ciquez pour vous connecter" and "&70 en train de jouer !"   
+        
+        set slot 18 of open inventory of {_p} to blaze powder named "&aSalle de Tournois" with lore "&8Evénements spéciaux" and " " and "&7Il s'agit d'un lobby spécial ouvert pour un" and "&7temps limité lors des tournois." and " " and "&7Restez attentif pour les annonces de" and "&7tournois! Tout le monde peut participer," and "&7gagner des &6hommages &7et débloquer" and "&7certaines des récompenses les plus" and "&eprestigieuses &7d'Hypixel." and " " and "&fDernier tournoi: &bCops and Crims Defusal" and "&7S'est déroulé en Mars 2021" and " " and "&c✘ Lobby Fermé"
+        set slot 27 of open inventory of {_p} to compass named "&aTous les Jeux" with lore " " and "&eCiquez pour Ouvrir"
+        
+        set slot 29 of open inventory of {_p} to dirt named "&aThe Hypixel Pit" with lore "&8Jeu Permanent" and " " and "&7Sautez dans la fausse pour vous" and "&7battre instantanément contre" and "&7plus de 50 joueurs. Le combat le" and "&7plus rapide sur Hypixel." and " " and "&a▶ Ciquez pour vous connecter" and "&70 en train de jouer !"   
+        set slot 30 of open inventory of {_p} to slime ball named "&aArcade Games" with lore "&8Jeux Décontractés" and " " and "&7Des mini-jeux amusants pour" and "&7jouer avvec des amis!" and "&f• Zombies" and "&f• Hide and Seek" and "&f• Capture the Wool" and "&f• Hole in the Wall" and "&f• The Blocking Dead" and "&f• Farm Hunt" and "&f• Creeper Attack" and "&f• Party Games" and "&f• Hypixel Says" and "&f• Pixel Painters" and "&f• Football" and "&f• Mini Walls" and "&f• Bounty Hunters" and "&f• Ender Spleef" and "&f• Galaxy Wars" and "&f• Dragon Wars" and " " and "&a▶ Ciquez pour vous connecter" and "&70 en train de jouer !"   
+        set slot 31 of open inventory of {_p} to crafting table named "&aBuild Battle" with lore "&8Jeux Décontractés" and " " and "&7Créez une construction basée sur" and "&7un thème en 5 minutes! Votez" and "&7pour les autres constructions" and "&7avec des notes allant de" and "&7""Super-Poop"" à ""Légendaire""." and "&7Obtenez le plus de votes sur 16" and "&7joueurs pour gagner!" and " " and "&a▶ Ciquez pour vous connecter" and "&70 en train de jouer !"   
+        set slot 32 of open inventory of {_p} to fishing rod named "&aDuels" with lore "&8Compétitif" and " " and "&7Des matchs rapides en 1v1, 2v2" and "&7et 4v4!" and " &f• UHC Duels" and " &f• SkyWars Duels" and " &f• The Bridges" and " &f• UHC Deathmatch" and " &f• Sumo Duels" and " &f• Op Duels" and " &f• Classic Duel" and " &f• NoDebuff Duels" and " &f• Blitz Duels" and " &f• Combo Duels" and " &f• Bow Duels" and " &f• TNT Games Duels" and " &f• Mega Walls Duels" and " " and "&a▶ Ciquez pour vous connecter" and "&70 en train de jouer !"   
+        set slot 33 of open inventory of {_p} to anvil named "&aPrototype" with lore "&8Jeux Décontractés" and " " and "&7Le PTL est un endroit pour" and "&7tester de nouveaux mini-jeux" and "&7amusants et créatifs ainsi que" and "&7des systèmes sur Hypixel." and " &f• SkyBlock" and " &f• TowerWars" and " " and "&cTout ce qui se trouve dans ce" and "&clobby est actuellement en" and "&cdéveloppement, et peut être" and "&csupprimé à tout moment." and " " and "&a▶ Ciquez pour vous connecter" and "&70 en train de jouer !"   
+        set slot 34 of open inventory of {_p} to golden apple named "&aUHC Champions" with lore "&8Survie Hardcore" and " " and "&7Un jeu en surie en équipe avec" and "&7111 joueurs. Le monde est généré" and "&7aléatoirement, le PvP vanila," and "&7les créations customisées, les" and "&7kits uniques et professions vous" and "&7attendent." and " " and "&cATTENTION!" and "&cVéritable expérience hardcore," and "&cnon recommandée aux nouveaux." and " " and "&a▶ Ciquez pour vous connecter" and "&70 en train de jouer !"   
+        
+        set slot 36 of open inventory of {_p} to clock named "&aJeu Aléatoire &e&lBETA" with lore "&7Rejoignez un jeu aléatoire." and " " and "&eCliquez pour Jouer"
+        set slot 45 of open inventory of {_p} to paper named "&aAtlas &e&lBETA" with lore " " and "&7A system to hep the Hypixel" and "&7Staff team catch cheaters with" and "&7the use of the Replay System." and " " and "&7Review cheaters reported by" and "&7players to help determine if the" and "&7report is legitimate !" and " " and "&eCliquez pour Jouer"

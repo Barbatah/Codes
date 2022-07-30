@@ -1,0 +1,10 @@
+command /listplayer:
+	trigger:
+		open chest with 6 rows named "Liste de joueurs" to player
+		wait 3 ticks
+		set {_slot} to 0
+		set {_puuid} to uuid of player
+		loop all players:
+			wait 1 tick
+			format slot {_slot} of player with loop-player's skull named "%loop-player%" with lore "&7UUID: &f%uuid%" to close then run [make player execute command "admin"]
+			add 1 to {_slot}

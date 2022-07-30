@@ -1,0 +1,63 @@
+command /backpacks [<text>]:
+	permission: skript.op
+	trigger:
+		if arg-1 is "on" or "enable" or "start":
+			if {backpacks} is 1:
+				message "<gold>Backpacks est maintenant activer."
+			else:
+				set {backpacks} to 1
+				broadcast "<gold><b>Backpacks activer."
+		if arg-1 is "off" or "disable" or "stop":
+			if {backpacks} is 0:
+				message "<gold>Backpacks est maintenant désactiver."
+			else:
+				set {backpacks} to 0
+				broadcast "<gold><b>Backpacks désactiver."
+
+ 
+command /bp [<player>]:
+	trigger:
+		if {backpacks} is 1:
+			if player-argument is set:
+				player is an op
+				player-argument is online
+				open player-argument's ender chest to the player
+			if player-argument is not set:
+				open the player's ender chest to the player
+		else:
+			message "<gold>Backpacks est désactiver." to the player
+ 
+command /bpclear [<player>]:
+	permission: skript.op
+	trigger:
+		if {backpacks} is 1:
+			if player-argument is set:
+				clear player-argument's ender chest
+				message "<gold>%player-argument%'s backpack emptied."
+			else:
+				loop all players:
+					clear loop-player's ender chest
+				broadcast "<gold><b>Le backpack est vide."
+		else:
+			message "<gold>Backpacks est désactiver." to the player
+ 
+on death:
+	if {backpacks} is 1:
+		set {_ender} to the victim's ender chest
+		set {_deathloc} to the block below the player
+		set the block at {_deathloc} to a chest
+		set the inventory of the block at {_deathloc} to {_ender}
+		set {_signloc} to the location 1 meter south of {_deathloc}
+		set the block at {_signloc} to a wall sign
+		set line 1 of the block at {_signloc} to "================="
+		set line 2 of the block at {_signloc} to "%victim%'s"
+		set line 3 of the block at {_signloc} to "<b>Backpack"
+		set line 4 of the block at {_signloc} to "================="
+		clear victim's ender chest
+		message "<gold>Votre sac à dos a été vidé." to the victim
+
+command /backpackgui:
+	permission: skript.op
+	permission message: &4Vous n'avez pas la permission
+	trigger:
+		open chest with 1 rows named "&0BackPack" to player

@@ -1,0 +1,53 @@
+options:
+	Pre: &8[&b3xArrows&8]
+	CC: &c
+	HC: &l
+	WUS: /playsound random.break %command sender% ~ ~ ~ 1 1 1
+	ES: /playsound note.pling %loop-player% ~ ~ ~ 1 1 1
+	Comm: /3arrows
+	Perm: skript.op
+	HelpSound: /playsound random.
+ 
+command {@Comm} <text>:
+	trigger:
+		if arg-1 is "enable":
+			if player has permission "{@Perm}":
+				if {3x.Enabled} is not set:
+					set {3x.Enabled} to true
+					broadcast "{@Pre}{@CC} Activer par: {@HC}&8[{@CC}%command sender%&8]"
+					loop all players:
+						execute console command "{@ES}"
+				else:
+					message "{@Pre}{@CC} Déjà Activer!"
+					execute console command "{@WUS}"
+			else:
+				message "{@CC}No Permission."
+				execute console command "{@WUS}"
+ 
+		if arg-1 is "disable":
+			if player has permission "{@Perm}":
+				if {3x.Enabled} is true:
+					delete {3x.Enabled}
+					broadcast "{@Pre}{@CC} Désactiver par: {@HC}&8[{@CC}%command sender%&8]"
+					loop all players:
+						execute console command "{@ES}"
+				else:
+					message "{@Pre}{@CC} Déjà désactiver!"
+					execute console command "{@WUS}"
+			else:
+				message "{@CC}Aucune autorisation."
+				execute console command "{@WUS}"
+ 
+on shoot:
+	{3x.Enabled} is true
+	projectile is an arrow
+	shooter is player
+	shooter is alive
+	set {3x.waited} to difference between {3x.time} and now
+	if {3x.waited} is less than 1 tick:
+		stop
+	set {3x.time} to now
+	shooter has 3 arrows
+	loop 2 times:
+		make the shooter shoot a arrow at speed 3
+	remove 2 arrows from the shooter

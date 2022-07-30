@@ -1,0 +1,7 @@
+on command "/plugins":
+	cancel event
+	send "&fVous ne pouvez pas avoir accès à cette commande" to player
+
+on command "/pl":
+	cancel event
+	send "&fVous ne pouvez pas avoir accès à cette commande" to player
